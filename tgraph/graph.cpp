@@ -1,7 +1,7 @@
-#include "graph.h"
+ï»¿#include "graph.h"
 
 graph::graph(const int& size) {
-	// ãåíåðàöèÿ ïóñòîãî ãðàôà ðàçìåðà size
+	// Ð³ÐµÐ½ÐµÑ€Ð°Ñ†Ð¸Ñ Ð¿ÑƒÑÑ‚Ð¾Ð³Ð¾ Ð³Ñ€Ð°Ñ„Ð° Ñ€Ð°Ð·Ð¼ÐµÑ€Ð° size
 	this->vertices_num = size;
 	adjacency_m = {};
 	adjacency_m.resize(size, std::vector<bool>(size, 0));
@@ -10,7 +10,7 @@ graph::graph(const int& size) {
 
 
 graph::graph(const std::vector<int>& distribution) {
-	// ãåíåðàöèÿ ãðàôà ïî ðàñïðåäåëåíèþ
+	// Ð³ÐµÐ½ÐµÑ€Ð°Ñ†Ð¸Ñ Ð³Ñ€Ð°Ñ„Ð° Ð¿Ð¾ Ñ€Ð°ÑÐ¿Ñ€ÐµÐ´ÐµÐ»ÐµÐ½Ð¸ÑŽ
 	this->vertices_num = distribution.size();
 	adjacency_m = {};
 	adjacency_m.resize(vertices_num, std::vector<bool>(vertices_num, 0));
