@@ -127,13 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="distribution.cpp" />
-    <ClCompile Include="graph.cpp" />
+    <ClCompile Include="distribution\distribution.cpp" />
+    <ClCompile Include="graph\graph.cpp" />
     <ClCompile Include="tgraph.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="distribution.h" />
-    <ClInclude Include="graph.h" />
+    <ClInclude Include="distribution\distribution.h" />
+    <ClInclude Include="graph\graph.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

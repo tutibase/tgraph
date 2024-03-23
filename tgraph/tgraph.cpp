@@ -1,6 +1,6 @@
 ﻿#include <iostream>
-#include "distribution.h"
-#include "graph.h"
+#include "distribution/distribution.h"
+#include "graph/graph.h"
 
 int main() {
     srand(time(NULL));

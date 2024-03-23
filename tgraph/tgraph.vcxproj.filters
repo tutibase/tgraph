@@ -18,18 +18,18 @@
     <ClCompile Include="tgraph.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="distribution.cpp">
+    <ClCompile Include="graph\graph.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="graph.cpp">
+    <ClCompile Include="distribution\distribution.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="distribution.h">
+    <ClInclude Include="graph\graph.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="graph.h">
+    <ClInclude Include="distribution\distribution.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
