@@ -41,3 +41,35 @@ void negative_hypergeometric::generate() {
 	}
 	std::sort(distribution.begin(), distribution.end(), std::greater<int>());
 }
+
+void negative_hypergeometric::printDistribution() {
+	std::cout << '(';
+	for (int i = 0; i < distribution.size(); i++) {
+		std::cout << distribution[i];
+		if (i != distribution.size() - 1) std::cout << ", ";
+	}
+	std::cout << ')';
+}
+
+int intInput(const char* msg, int maxi, int mini) {
+	std::cout << msg;
+	int val;
+	while (true) {
+		std::cin >> val;
+		if (std::cin.peek() != '\n' or val > maxi or val < mini) {
+			std::cin.clear();
+			std::cin.ignore(std::cin.rdbuf()->in_avail());
+			printf("\nInvalid value, repeat the input\n");
+		}
+		else break;
+	}
+	return val;
+}
+
+void help() {
+	std::cout << "\n\n[0] - exit" << '\n';
+	std::cout << "[1] - help" << '\n';
+	std::cout << "[2] - print the adjacency matrix" << '\n';
+	std::cout << "[3] - print the weight matrix" << '\n';
+	std::cout << "[4] - Shimbell method" << '\n';
+}
