@@ -6,8 +6,9 @@ graph::graph(const int& size) {
 	adjacency_m = {};
 	adjacency_m.resize(size, std::vector<bool>(size, 0));
 	edges_num = 0;
-}
 
+	generareWeightMatrix();
+}
 
 graph::graph(const std::vector<int>& distribution) {
 	// генерация графа по распределению
@@ -16,6 +17,11 @@ graph::graph(const std::vector<int>& distribution) {
 	adjacency_m.resize(vertices_num, std::vector<bool>(vertices_num, 0));
 	edges_num = 0;
 	
+	generareAdjacencyMatrix(distribution);
+	generareWeightMatrix();
+}
+
+void graph::generareAdjacencyMatrix(const std::vector<int>& distribution) {
 	for (int i = 0; i < vertices_num; i++) {
 		int upper_lim = (vertices_num - i - 1 > distribution[i]) ? (distribution[i]) : (vertices_num - i - 1);
 		if (upper_lim == 0 and i != vertices_num - 1) {
@@ -35,10 +41,69 @@ graph::graph(const std::vector<int>& distribution) {
 	}
 }
 
+void graph::generareWeightMatrix() {
+	weight_m = {};
+	weight_m.resize(adjacency_m.size(), std::vector<int>(adjacency_m.size(), 0));
+
+	for (int i = 0; i < adjacency_m.size(); i++) {
+		for (int j = i; j < adjacency_m.size(); j++) {
+			if (adjacency_m[i][j] == 1) {
+				weight_m[i][j] = rand() % (max_weight - 1) + 1;
+			}
+		}
+	}
+}
+
+void graph::ShimbellMethod(const int& edges_num, const bool& flag) {
+	// Метод поиска максимального/минимального пути между вершинами длиной в edges_num ребер \
+	flag = 1 - максимального, flag = 0 - минимального; по умолчанию поиск максимального
+
+	std::vector<std::vector<int>> shimbell_m = weight_m;
+	std::vector<std::vector<int>> result = shimbell_m;
+
+	for (int _ = 0; _ < edges_num - 1; _++) {
+		for (int i = 0; i < vertices_num; i++) {
+			for (int j = 0; j < vertices_num; j++) {
+				result[i][j] = 0;
+				for (int k = 0; k < vertices_num; k++) {
+					int summ = 0;
+					if (shimbell_m[i][k] != 0 and weight_m[k][j] != 0) 
+						summ = shimbell_m[i][k] + weight_m[k][j];
+					
+					if (flag) result[i][j] = std::max(summ, result[i][j]);
+					else { 
+						if (summ != 0 and result[i][j] != 0)
+							result[i][j] = std::min(summ, result[i][j]); 
+						if (summ != 0 and result[i][j] == 0)
+							result[i][j] = summ;
+					}
+				}
+			}
+		}
+		shimbell_m = result;
+	}
+
+	for (int i = 0; i < shimbell_m.size(); i++) {
+		for (int j = 0; j < shimbell_m.size(); j++) {
+			std::cout << shimbell_m[i][j] << ' ';
+		}
+		std::cout << '\n';
+	}
+}
+
 void graph::printAdjacencyMatrix() {
 	for (int i = 0; i < adjacency_m.size(); i++) {
 		for (int j = 0; j < adjacency_m.size(); j++) {
 			std::cout << adjacency_m[i][j] << ' ';
+		}
+		std::cout << '\n';
+	}
+}
+
+void graph::printWeightMatrix() {
+	for (int i = 0; i < weight_m.size(); i++) {
+		for (int j = 0; j < weight_m.size(); j++) {
+			std::cout << weight_m[i][j] << ' ';
 		}
 		std::cout << '\n';
 	}
