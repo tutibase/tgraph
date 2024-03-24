@@ -1,8 +1,10 @@
 ﻿#pragma once
 #include <vector>
 #include <iostream>
+#include <iomanip>
 
 const int max_weight = 10;
+const int width = 2;
 
 class graph {
 public:
@@ -11,7 +13,9 @@ public:
 
 	void generareAdjacencyMatrix(const std::vector<int>& distribution);
 	void generareWeightMatrix();
-	void ShimbellMethod(const int& edges_num, const bool& flag = 1);
+
+	void ShimbellMethod(const int& edges_num, const bool& flag = 0);
+	int reachabilityCheck(const int& a, const int& b);
 
 	void printAdjacencyMatrix();
 	void printWeightMatrix();
@@ -20,12 +24,12 @@ public:
 	const int& getVerticesNum() { return vertices_num; };
 	const int& getEdgesNum() { return edges_num; };
 
+	std::vector<std::vector<bool>> adjacency_m; // матрица смежности
 private:
 	int vertices_num; // количество вершин
 	int edges_num; // количество ребер
 
-	std::vector<std::vector<bool>> adjacency_m; // матрица смежности
 	std::vector<std::vector<int>> weight_m; // матрица весов
-
+	std::vector<std::vector<int>> reachability_m; // мартица достижимости
 };
 

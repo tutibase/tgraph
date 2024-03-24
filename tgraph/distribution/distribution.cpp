@@ -1,7 +1,6 @@
 ﻿#include "distribution.h"
 
 negative_hypergeometric::negative_hypergeometric(int size) {
-	// сделать проверку на неотрицательность m, M, N и m <= M <= N
 	distribution = {};
 
 	// (N-M) - верхняя граница; чем ближе m к M, тем ближе значения к верхней границе
@@ -72,4 +71,6 @@ void help() {
 	std::cout << "[2] - print the adjacency matrix" << '\n';
 	std::cout << "[3] - print the weight matrix" << '\n';
 	std::cout << "[4] - Shimbell method" << '\n';
+	std::cout << "[5] - check the reachability" << '\n';
+	std::cout << "[10] - regenerate graph" << '\n';
 }

@@ -8,6 +8,8 @@ graph::graph(const int& size) {
 	edges_num = 0;
 
 	generareWeightMatrix();
+	reachability_m = {};
+
 }
 
 graph::graph(const std::vector<int>& distribution) {
@@ -19,6 +21,7 @@ graph::graph(const std::vector<int>& distribution) {
 	
 	generareAdjacencyMatrix(distribution);
 	generareWeightMatrix();
+	reachability_m = {};
 }
 
 void graph::generareAdjacencyMatrix(const std::vector<int>& distribution) {
@@ -56,7 +59,7 @@ void graph::generareWeightMatrix() {
 
 void graph::ShimbellMethod(const int& edges_num, const bool& flag) {
 	// Метод поиска максимального/минимального пути между вершинами длиной в edges_num ребер \
-	flag = 1 - максимального, flag = 0 - минимального; по умолчанию поиск максимального
+	flag = 1 - максимального, flag = 0 - минимального; по умолчанию поиск минимального
 
 	std::vector<std::vector<int>> shimbell_m = weight_m;
 	std::vector<std::vector<int>> result = shimbell_m;
@@ -85,11 +88,55 @@ void graph::ShimbellMethod(const int& edges_num, const bool& flag) {
 
 	for (int i = 0; i < shimbell_m.size(); i++) {
 		for (int j = 0; j < shimbell_m.size(); j++) {
-			std::cout << shimbell_m[i][j] << ' ';
+			std::cout << std::setw(width) << shimbell_m[i][j] << ' ';
 		}
 		std::cout << '\n';
 	}
 }
+
+int graph::reachabilityCheck(const int& a, const int& b) {
+	if (reachability_m.size() != 0)
+		return reachability_m[a][b];
+
+	std::vector<std::vector<int>> result = {}; // результат матричного умножения
+	result.resize(vertices_num, std::vector<int>(vertices_num, 0));
+
+	std::vector<std::vector<int>> degree = result; // очередная степень матрицы
+
+	for (int i = 0; i < vertices_num; i++) {
+		for (int j = 0; j < vertices_num; j++) {
+			degree[i][j] = adjacency_m[i][j];
+		}
+	}
+	reachability_m = degree;
+
+	for (int _ = 0; _ < vertices_num - 1; _++) {
+		for (int i = 0; i < vertices_num; i++) {
+			for (int j = 0; j < vertices_num; j++) {
+				result[i][j] = 0;
+				for (int k = 0; k < vertices_num; k++) {
+					result[i][j] += degree[i][k] * adjacency_m[k][j];
+				}
+			}
+		}
+		degree = result; // новая степень 
+
+		// добавление новой степени в матрицу достижимости
+		for (int i = 0; i < vertices_num; i++) {
+			for (int j = 0; j < vertices_num; j++) {
+				reachability_m[i][j] += degree[i][j];
+			}
+		}
+	}
+
+	// добавление единичной матрицы
+	for (int i = 0; i < vertices_num; i++) {
+		reachability_m[i][i] += 1;
+	}
+	
+	return reachability_m[a][b];
+}
+
 
 void graph::printAdjacencyMatrix() {
 	for (int i = 0; i < adjacency_m.size(); i++) {
