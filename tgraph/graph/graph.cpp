@@ -93,12 +93,6 @@ std::vector<std::vector<int>> graph::ShimbellMethod(const int& edges_num, const 
 	}
 
 	return shimbell_m;
-	/*for (int i = 0; i < shimbell_m.size(); i++) {
-		for (int j = 0; j < shimbell_m.size(); j++) {
-			std::cout << std::left << std::setw(width) << shimbell_m[i][j] << ' ';
-		}
-		std::cout << '\n';
-	}*/
 }
 
 int graph::reachabilityCheck(const int& a, const int& b) {
@@ -145,13 +139,6 @@ int graph::reachabilityCheck(const int& a, const int& b) {
 		reachability_m[i][i] += 1;
 	}
 
-	for (int i = 0; i < reachability_m.size(); i++) {
-		for (int j = 0; j < reachability_m.size(); j++) {
-			std::cout << std::left << std::setw(width) << reachability_m[i][j] << ' ';
-		}
-		std::cout << '\n';
-	}
-	
 	return reachability_m[a][b];
 }
 
