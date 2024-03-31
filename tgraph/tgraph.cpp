@@ -88,6 +88,14 @@ int main() {
         }
         break;
 
+        case 9:
+        {
+            int a = intInput("1st vertex: ", myGraph.getVerticesNum());
+            int b = intInput("2nd vertex: ", myGraph.getVerticesNum());
+            myGraph.BellmanFord(a, b, 1);
+        }
+        break;
+
         case 10:
             size = intInput("Enter the number of vertices of the graph: ", 15);
             distribution = negative_hypergeometric(size);

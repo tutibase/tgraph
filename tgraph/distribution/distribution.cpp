@@ -75,5 +75,6 @@ void help() {
 	std::cout << "[6] - regenerate weight matrix" << '\n';
 	std::cout << "[7] - Dijkstra's algorithm" << '\n';
 	std::cout << "[8] - Bellman-Ford algorithm" << '\n';
+	std::cout << "[9] - Maximum path" << '\n';
 	std::cout << "[10] - regenerate graph" << '\n';
 }

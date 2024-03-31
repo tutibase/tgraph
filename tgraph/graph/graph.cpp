@@ -151,7 +151,7 @@ int graph::reachabilityCheck(const int& a, const int& b) {
 
 void graph::Dijkstra(int start_v, int end_v) {
 	// алгоритм Дейкстры (поиск пути минимальной длины между вершинами)
-	// функция печатает путь от start_v до end_v и вектор расстояний от start_v до всех вершин
+	// метод печатает путь от start_v до end_v и вектор расстояний от start_v до всех вершин
 	if (negative_weights == 1) {
 		std::cout << "The algorithm doesn't work with negative values";
 		return;
@@ -220,7 +220,7 @@ void graph::Dijkstra(int start_v, int end_v) {
 	std::cout << std::endl;
 
 	if (path.empty()) {
-		std::cout << "The path was not found" << std::endl;
+		std::cout << "Path was not found" << std::endl;
 	}
 	else {
 		std::cout << "Way: ";
@@ -231,10 +231,16 @@ void graph::Dijkstra(int start_v, int end_v) {
 	}
 }
 
-// Метод для алгоритма Беллмана-Форда
-bool graph::BellmanFord(int start_v, int end_v) {
+
+bool graph::BellmanFord(int start_v, int end_v, bool find_max_path) {
 	// алгоритм Беллмана-Форда
-	std::vector<int>distances = std::vector<int>(vertices_num, INT_MAX);; // расстояния до вершин
+	// если find_max_path == 1, то ищем максимальный путь, иначе (по умолчанию) минимальный
+	// метод печатает путь от start_v до end_v и вектор расстояний от start_v до всех вершин
+	int inf;
+	if (find_max_path) inf = INT_MIN;
+	else inf = INT_MAX;
+
+	std::vector<int>distances = std::vector<int>(vertices_num, inf); // расстояния до вершин
 	std::vector<int> predecessors = std::vector<int>(vertices_num, -1);	// Хранит предшественников вершин
 	
 	distances[start_v] = 0;
@@ -244,7 +250,10 @@ bool graph::BellmanFord(int start_v, int end_v) {
 		for (int u = 0; u < vertices_num; u++) {
 			for (int v = 0; v < vertices_num; v++) {
 				if (weight_m[u][v] != 0) {
-					if (distances[u] != INT_MAX && distances[u] + weight_m[u][v] < distances[v]) {
+					bool comparison = distances[u] + weight_m[u][v] < distances[v];
+					if (find_max_path) comparison = !comparison;
+
+					if (distances[u] != inf && comparison) {
 						distances[v] = distances[u] + weight_m[u][v];
 						predecessors[v] = u;
 					}
@@ -253,11 +262,11 @@ bool graph::BellmanFord(int start_v, int end_v) {
 		}
 	}
 
-	std::vector<int> path = get_shortest_path(start_v, end_v, predecessors);
+	std::vector<int> path = get_path(start_v, end_v, predecessors);
 	// вывод
 	std::cout << "\nDistances: ";
 	for (int d : distances) {
-		if (d != INT_MAX)
+		if (d != inf)
 			std::cout << d << " ";
 		else
 			std::cout << "inf ";
@@ -265,7 +274,7 @@ bool graph::BellmanFord(int start_v, int end_v) {
 	std::cout << std::endl;
 
 	if (path.empty()) {
-		std::cout << "The path was not found" << std::endl;
+		std::cout << "Path was not found" << std::endl;
 	}
 	else {
 		std::cout << "Way: ";
@@ -273,13 +282,14 @@ bool graph::BellmanFord(int start_v, int end_v) {
 			std::cout << path[i];
 			if (i != path.size() - 1) std::cout << " -> ";
 		}
+		std::cout << std::endl;
 	}
 
 	// Проверка отрицательных циклов
 	for (int u = 0; u < vertices_num; u++) {
 		for (int v = 0; v < vertices_num; v++) {
 			if (weight_m[u][v] != 0) {
-				if (distances[u] != INT_MAX && distances[u] + weight_m[u][v] < distances[v]) {
+				if (distances[u] != inf && distances[u] + weight_m[u][v] < distances[v]) {
 					return false; // Есть отрицательный цикл
 				}
 			}
@@ -290,7 +300,7 @@ bool graph::BellmanFord(int start_v, int end_v) {
 }
 
 
-std::vector<int> graph::get_shortest_path(int start_v, int end_v, const std::vector<int>& predecessors) {
+std::vector<int> graph::get_path(int start_v, int end_v, const std::vector<int>& predecessors) {
 	std::vector<int> path;
 	if (predecessors[end_v] == -1) {
 		return path; // Путь не существует
