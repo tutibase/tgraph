@@ -149,7 +149,9 @@ int graph::reachabilityCheck(const int& a, const int& b) {
 	return reachability_m[a][b];
 }
 
-void graph::Dijkstra(int start_node, int end_node) {
+void graph::Dijkstra(int start_v, int end_v) {
+	// алгоритм Дейкстры (поиск пути минимальной длины между вершинами)
+	// функция печатает путь от start_v до end_v и вектор расстояний от start_v до всех вершин
 	if (negative_weights == 1) {
 		std::cout << "The algorithm doesn't work with negative values";
 		return;
@@ -159,47 +161,47 @@ void graph::Dijkstra(int start_node, int end_node) {
 	std::vector<bool> visited(vertices_num, false); // посещенные вершины
 	std::vector<int> predecessor(vertices_num, -1); // Хранит предшественников вершин
 
-	distance[start_node] = 0; // расстояние до начальной вершины равно 0
+	distance[start_v] = 0; // расстояние до начальной вершины равно 0
 
 	std::vector<int> path; // путь от начальной вершины до текущей
 
-	while (!visited[end_node]) {
+	while (!visited[end_v]) {
 		// Найти не посещенную вершину с минимальным расстоянием
 		int min_distance = INT_MAX;
-		int min_distance_node = -1;
+		int min_distance_v = -1;
 		for (int i = 0; i < vertices_num; i++) {
 			if (!visited[i] && distance[i] < min_distance) {
 				min_distance = distance[i];
-				min_distance_node = i;
+				min_distance_v = i;
 			}
 		}
 
 		// Если все вершины посещены, но конечная вершина не достигнута, выход из цикла
-		if (min_distance_node == -1) {
+		if (min_distance_v == -1) {
 			break;
 		}
 
 		// Обновить расстояния до достижимых вершин
 		for (int i = 0; i < vertices_num; i++) {
-			if (weight_m[min_distance_node][i] != 0) {
-				int new_distance = distance[min_distance_node] + weight_m[min_distance_node][i];
+			if (weight_m[min_distance_v][i] != 0) {
+				int new_distance = distance[min_distance_v] + weight_m[min_distance_v][i];
 				if (new_distance < distance[i]) {
 					distance[i] = new_distance;
-					predecessor[i] = min_distance_node; // Обновить предшественника
+					predecessor[i] = min_distance_v; // Обновить предшественника
 				}
 			}
 		}
 
 		// Пометить вершину как посещенную
-		visited[min_distance_node] = true;
+		visited[min_distance_v] = true;
 	}
 
 	// Восстановить кратчайший путь
-	if (visited[end_node]) {
-		int current_node = end_node;
-		while (current_node != -1) {
-			path.push_back(current_node);
-			current_node = predecessor[current_node];
+	if (visited[end_v]) {
+		int current_v = end_v;
+		while (current_v != -1) {
+			path.push_back(current_v);
+			current_v = predecessor[current_v];
 		}
 		std::reverse(path.begin(), path.end()); // Изменить порядок вершин на правильный
 	}
@@ -208,11 +210,20 @@ void graph::Dijkstra(int start_node, int end_node) {
 	}
 
 	// вывод
+	std::cout << "\nDistances: ";
+	for (int d : distance) {
+		if (d != INT_MAX)
+			std::cout << d << " ";
+		else
+			std::cout << "inf ";
+	}
+	std::cout << std::endl;
+
 	if (path.empty()) {
 		std::cout << "The path was not found" << std::endl;
 	}
 	else {
-		std::cout << "Shortest way has a length of " << distance[end_node] << ". Way: ";
+		std::cout << "Way: ";
 		for (int i = 0; i < path.size(); i++) {
 			std::cout << path[i];
 			if (i != path.size() - 1) std::cout << " -> ";
@@ -220,6 +231,81 @@ void graph::Dijkstra(int start_node, int end_node) {
 	}
 }
 
+// Метод для алгоритма Беллмана-Форда
+bool graph::BellmanFord(int start_v, int end_v) {
+	// алгоритм Беллмана-Форда
+	std::vector<int>distances = std::vector<int>(vertices_num, INT_MAX);; // расстояния до вершин
+	std::vector<int> predecessors = std::vector<int>(vertices_num, -1);	// Хранит предшественников вершин
+	
+	distances[start_v] = 0;
+
+	// Основной цикл: (V-1) раз пройтись по всем рёбрам
+	for (int i = 0; i < vertices_num - 1; i++) {
+		for (int u = 0; u < vertices_num; u++) {
+			for (int v = 0; v < vertices_num; v++) {
+				if (weight_m[u][v] != 0) {
+					if (distances[u] != INT_MAX && distances[u] + weight_m[u][v] < distances[v]) {
+						distances[v] = distances[u] + weight_m[u][v];
+						predecessors[v] = u;
+					}
+				}
+			}
+		}
+	}
+
+	std::vector<int> path = get_shortest_path(start_v, end_v, predecessors);
+	// вывод
+	std::cout << "\nDistances: ";
+	for (int d : distances) {
+		if (d != INT_MAX)
+			std::cout << d << " ";
+		else
+			std::cout << "inf ";
+	}
+	std::cout << std::endl;
+
+	if (path.empty()) {
+		std::cout << "The path was not found" << std::endl;
+	}
+	else {
+		std::cout << "Way: ";
+		for (int i = 0; i < path.size(); i++) {
+			std::cout << path[i];
+			if (i != path.size() - 1) std::cout << " -> ";
+		}
+	}
+
+	// Проверка отрицательных циклов
+	for (int u = 0; u < vertices_num; u++) {
+		for (int v = 0; v < vertices_num; v++) {
+			if (weight_m[u][v] != 0) {
+				if (distances[u] != INT_MAX && distances[u] + weight_m[u][v] < distances[v]) {
+					return false; // Есть отрицательный цикл
+				}
+			}
+		}
+	}
+
+	return true; // Отрицательных циклов нет
+}
+
+
+std::vector<int> graph::get_shortest_path(int start_v, int end_v, const std::vector<int>& predecessors) {
+	std::vector<int> path;
+	if (predecessors[end_v] == -1) {
+		return path; // Путь не существует
+	}
+
+	// Восстановление пути от конечной вершины к начальной
+	for (int v = end_v; v != start_v; v = predecessors[v]) {
+		path.push_back(v);
+	}
+	path.push_back(start_v);
+
+	// Разворот пути в правильном порядке
+	std::reverse(path.begin(), path.end());
+	return path;
+}
 
 void graph::printAdjacencyMatrix() {
 	for (int i = 0; i < adjacency_m.size(); i++) {
