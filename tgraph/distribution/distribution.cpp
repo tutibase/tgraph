@@ -68,9 +68,11 @@ int intInput(const char* msg, int maxi, int mini) {
 void help() {
 	std::cout << "\n\n[0] - exit" << '\n';
 	std::cout << "[1] - help" << '\n';
-	std::cout << "[2] - print the adjacency matrix" << '\n';
-	std::cout << "[3] - print the weight matrix" << '\n';
+	std::cout << "[2] - print adjacency matrix" << '\n';
+	std::cout << "[3] - print weight matrix" << '\n';
 	std::cout << "[4] - Shimbell method" << '\n';
-	std::cout << "[5] - check the reachability" << '\n';
+	std::cout << "[5] - check reachability" << '\n';
+	std::cout << "[6] - regenerate weight matrix" << '\n';
+	std::cout << "[7] - Dijkstra's algorithm" << '\n';
 	std::cout << "[10] - regenerate graph" << '\n';
 }

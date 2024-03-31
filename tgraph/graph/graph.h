@@ -13,6 +13,9 @@ public:
 
 	std::vector<std::vector<int>> ShimbellMethod(const int& edges_num, const bool& flag = 0);
 	int reachabilityCheck(const int& a, const int& b);
+	void Dijkstra(int start_node, int end_node);
+
+	void generareWeightMatrix(bool add_negative = 0);
 
 	void printAdjacencyMatrix();
 	void printWeightMatrix();
@@ -24,12 +27,12 @@ public:
 private:
 	int vertices_num; // количество вершин
 	int edges_num; // количество ребер
+	bool negative_weights; // наличие отрицательных весов дуг
 
 	std::vector<std::vector<int>> weight_m; // матрица весов
 	std::vector<std::vector<int>> reachability_m; // мартица достижимости
 	std::vector<std::vector<bool>> adjacency_m; // матрица смежности
 
 	void generareAdjacencyMatrix(const std::vector<int>& distribution);
-	void generareWeightMatrix();
 };
 

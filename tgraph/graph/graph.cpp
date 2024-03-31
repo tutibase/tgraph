@@ -44,7 +44,10 @@ void graph::generareAdjacencyMatrix(const std::vector<int>& distribution) {
 	}
 }
 
-void graph::generareWeightMatrix() {
+void graph::generareWeightMatrix(bool add_negative) {
+	// генерация матрицы весов на основе матрицы смежности
+	// если add_negative == 1, то половина весов будет отрицательной
+	negative_weights = add_negative;
 	weight_m = {};
 	weight_m.resize(adjacency_m.size(), std::vector<int>(adjacency_m.size(), 0));
 
@@ -52,6 +55,10 @@ void graph::generareWeightMatrix() {
 		for (int j = i; j < adjacency_m.size(); j++) {
 			if (adjacency_m[i][j] == 1) {
 				weight_m[i][j] = rand() % (max_weight - 1) + 1;
+
+				if (add_negative == 1 and rand() % 2 == 0) {
+					weight_m[i][j] = -weight_m[i][j];
+				}
 			}
 		}
 	}
@@ -142,6 +149,77 @@ int graph::reachabilityCheck(const int& a, const int& b) {
 	return reachability_m[a][b];
 }
 
+void graph::Dijkstra(int start_node, int end_node) {
+	if (negative_weights == 1) {
+		std::cout << "The algorithm doesn't work with negative values";
+		return;
+	}
+	// Инициализация
+	std::vector<int> distance(vertices_num, INT_MAX); // расстояния до вершин
+	std::vector<bool> visited(vertices_num, false); // посещенные вершины
+	std::vector<int> predecessor(vertices_num, -1); // Хранит предшественников вершин
+
+	distance[start_node] = 0; // расстояние до начальной вершины равно 0
+
+	std::vector<int> path; // путь от начальной вершины до текущей
+
+	while (!visited[end_node]) {
+		// Найти не посещенную вершину с минимальным расстоянием
+		int min_distance = INT_MAX;
+		int min_distance_node = -1;
+		for (int i = 0; i < vertices_num; i++) {
+			if (!visited[i] && distance[i] < min_distance) {
+				min_distance = distance[i];
+				min_distance_node = i;
+			}
+		}
+
+		// Если все вершины посещены, но конечная вершина не достигнута, выход из цикла
+		if (min_distance_node == -1) {
+			break;
+		}
+
+		// Обновить расстояния до достижимых вершин
+		for (int i = 0; i < vertices_num; i++) {
+			if (weight_m[min_distance_node][i] != 0) {
+				int new_distance = distance[min_distance_node] + weight_m[min_distance_node][i];
+				if (new_distance < distance[i]) {
+					distance[i] = new_distance;
+					predecessor[i] = min_distance_node; // Обновить предшественника
+				}
+			}
+		}
+
+		// Пометить вершину как посещенную
+		visited[min_distance_node] = true;
+	}
+
+	// Восстановить кратчайший путь
+	if (visited[end_node]) {
+		int current_node = end_node;
+		while (current_node != -1) {
+			path.push_back(current_node);
+			current_node = predecessor[current_node];
+		}
+		std::reverse(path.begin(), path.end()); // Изменить порядок вершин на правильный
+	}
+	else {
+		path = std::vector<int>();
+	}
+
+	// вывод
+	if (path.empty()) {
+		std::cout << "The path was not found" << std::endl;
+	}
+	else {
+		std::cout << "Shortest way has a length of " << distance[end_node] << ". Way: ";
+		for (int i = 0; i < path.size(); i++) {
+			std::cout << path[i];
+			if (i != path.size() - 1) std::cout << " -> ";
+		}
+	}
+}
+
 
 void graph::printAdjacencyMatrix() {
 	for (int i = 0; i < adjacency_m.size(); i++) {
@@ -155,7 +233,7 @@ void graph::printAdjacencyMatrix() {
 void graph::printWeightMatrix() {
 	for (int i = 0; i < weight_m.size(); i++) {
 		for (int j = 0; j < weight_m.size(); j++) {
-			std::cout << weight_m[i][j] << ' ';
+			std::cout << std::right << std::setw(width) << weight_m[i][j] << ' ';
 		}
 		std::cout << '\n';
 	}

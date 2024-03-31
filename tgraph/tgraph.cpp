@@ -68,6 +68,18 @@ int main() {
         }
             break;
 
+        case 6:
+            myGraph.generareWeightMatrix(intInput("Add negative weights?\n[0] - no, [1] - yes: ", 1));
+            break;
+
+        case 7:
+        {
+            int a = intInput("1st vertex: ", myGraph.getVerticesNum());
+            int b = intInput("2nd vertex: ", myGraph.getVerticesNum());
+            myGraph.Dijkstra(a, b);
+        }
+            break;
+
         case 10:
             size = intInput("Enter the number of vertices of the graph: ", 15);
             distribution = negative_hypergeometric(size);
