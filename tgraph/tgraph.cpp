@@ -5,8 +5,8 @@
 int main() {
     srand(time(NULL));
 
-    // int size = intInput("Enter the number of vertices of the graph: ", 100);
-    int size = 5;
+    int size = intInput("Enter the number of vertices of the graph: ", 100);
+    //int size = 5;
 
     // generate distribution
     negative_hypergeometric distribution(size);
@@ -18,7 +18,7 @@ int main() {
     graph myGraph(distribution.getDistribution());
 
     //myGraph.weight_m = { {0,3,1,5,0}, {0,0,0,0,2}, {0,1,0,0,4}, {0,0,2,0,4}, {0,0,0,0,0} };
-    myGraph.adjacency_m = { {0,1,1,1,0}, {0,0,0,0,1}, {0,1,0,0,1}, {0,0,1,0,1}, {0,0,0,0,0} };
+    //myGraph.adjacency_m = { {0,1,1,1,0}, {0,0,0,0,1}, {0,1,0,0,1}, {0,0,1,0,1}, {0,0,0,0,0} };
   
     // menu
     int i = 1;
@@ -42,7 +42,18 @@ int main() {
             break;
 
         case 4:
-            myGraph.ShimbellMethod(intInput("Enter the number of edges: ", myGraph.getVerticesNum() - 1), 0);
+        {
+            bool flag = int(intInput("[0] - min route, [1] - max route: ", 1));
+            std::vector<std::vector<int>> shimbell_m = myGraph.ShimbellMethod(intInput("\nEnter the number of edges: ",
+                                                                              myGraph.getVerticesNum() - 1), flag);
+
+            for (int i = 0; i < shimbell_m.size(); i++) {
+                for (int j = 0; j < shimbell_m.size(); j++) {
+                    std::cout << std::left << std::setw(width) << shimbell_m[i][j] << ' ';
+                }
+                std::cout << '\n';
+            }
+        }
             break;
 
         case 5:
@@ -71,7 +82,7 @@ int main() {
             break;
         }
 
-        if (flag) i = intInput("\nEnter a number [0; 5]\n", 10);
+        if (flag) i = intInput("\nEnter a number\n", 10);
     }
 
     return 0;

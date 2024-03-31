@@ -57,9 +57,15 @@ void graph::generareWeightMatrix() {
 	}
 }
 
-void graph::ShimbellMethod(const int& edges_num, const bool& flag) {
+std::vector<std::vector<int>> graph::ShimbellMethod(const int& edges_num, const bool& flag) {
 	// Метод поиска максимального/минимального пути между вершинами длиной в edges_num ребер \
 	flag = 1 - максимального, flag = 0 - минимального; по умолчанию поиск минимального
+
+	if (edges_num == 0) {
+		std::vector<std::vector<int>> result;
+		result.resize(adjacency_m.size(), std::vector<int>(adjacency_m.size(), 0));
+		return result;
+	}
 
 	std::vector<std::vector<int>> shimbell_m = weight_m;
 	std::vector<std::vector<int>> result = shimbell_m;
@@ -86,18 +92,23 @@ void graph::ShimbellMethod(const int& edges_num, const bool& flag) {
 		shimbell_m = result;
 	}
 
-	for (int i = 0; i < shimbell_m.size(); i++) {
+	return shimbell_m;
+	/*for (int i = 0; i < shimbell_m.size(); i++) {
 		for (int j = 0; j < shimbell_m.size(); j++) {
-			std::cout << std::setw(width) << shimbell_m[i][j] << ' ';
+			std::cout << std::left << std::setw(width) << shimbell_m[i][j] << ' ';
 		}
 		std::cout << '\n';
-	}
+	}*/
 }
 
 int graph::reachabilityCheck(const int& a, const int& b) {
+	// функция проверки достижимости из вершины с номером a в вершину с номером b
+	// result: количество таких маршрутов
+
 	if (reachability_m.size() != 0)
 		return reachability_m[a][b];
 
+	// создание матрицы достижимости
 	std::vector<std::vector<int>> result = {}; // результат матричного умножения
 	result.resize(vertices_num, std::vector<int>(vertices_num, 0));
 
@@ -108,7 +119,7 @@ int graph::reachabilityCheck(const int& a, const int& b) {
 			degree[i][j] = adjacency_m[i][j];
 		}
 	}
-	reachability_m = degree;
+	reachability_m = degree; // сразу добавляем первую степень
 
 	for (int _ = 0; _ < vertices_num - 1; _++) {
 		for (int i = 0; i < vertices_num; i++) {
@@ -132,6 +143,13 @@ int graph::reachabilityCheck(const int& a, const int& b) {
 	// добавление единичной матрицы
 	for (int i = 0; i < vertices_num; i++) {
 		reachability_m[i][i] += 1;
+	}
+
+	for (int i = 0; i < reachability_m.size(); i++) {
+		for (int j = 0; j < reachability_m.size(); j++) {
+			std::cout << std::left << std::setw(width) << reachability_m[i][j] << ' ';
+		}
+		std::cout << '\n';
 	}
 	
 	return reachability_m[a][b];
