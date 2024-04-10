@@ -18,6 +18,9 @@ public:
 	void BellmanFordMaxPath(int start_v, int end_v);
 
 	void generareWeightMatrix(bool add_negative = 0);
+	void generareCostMatrix();
+	void generareBandwidthMatrix();
+
 
 	void printAdjacencyMatrix();
 	void printWeightMatrix();
@@ -35,8 +38,10 @@ private:
 	std::vector<std::vector<int>> reachability_m; // мартица достижимости
 	std::vector<std::vector<bool>> adjacency_m; // матрица смежности
 
+	std::vector<std::vector<int>> bandwidth_m; // матрица пропускных способностей
+	std::vector<std::vector<int>> cost_m; // матрица стоимостей
+
 	std::vector<int> get_path(int start_v, int end_v, const std::vector<int>& predecessors);
 
 	void generareAdjacencyMatrix(const std::vector<int>& distribution);
 };
-

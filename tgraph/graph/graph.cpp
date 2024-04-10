@@ -10,6 +10,7 @@ graph::graph(const int& size) {
 	generareWeightMatrix();
 	reachability_m = {};
 
+	generareBandwidthMatrix();
 }
 
 graph::graph(const std::vector<int>& distribution) {
@@ -22,6 +23,8 @@ graph::graph(const std::vector<int>& distribution) {
 	generareAdjacencyMatrix(distribution);
 	generareWeightMatrix();
 	reachability_m = {};
+
+	generareBandwidthMatrix();
 }
 
 void graph::generareAdjacencyMatrix(const std::vector<int>& distribution) {
@@ -60,6 +63,30 @@ void graph::generareWeightMatrix(bool add_negative) {
 					weight_m[i][j] = -weight_m[i][j];
 				}
 			}
+		}
+	}
+	generareCostMatrix();
+}
+
+void graph::generareCostMatrix() {
+	// генерация матрицы стоимостей на основе весовой
+	cost_m = {};
+	cost_m.resize(weight_m.size(), std::vector<int>(weight_m.size(), 0));
+	for (int i = 0; i < weight_m.size(); i++) {
+		for (int j = 0; j < weight_m.size(); j++) {
+			cost_m[i][j] = abs(weight_m[i][j]);
+		}
+	}
+}
+
+void graph::generareBandwidthMatrix() {
+	// генерация матрицы пропускных способностей
+	bandwidth_m = {};
+	bandwidth_m.resize(adjacency_m.size(), std::vector<int>(adjacency_m.size(), 0));
+	for (int i = 0; i < adjacency_m.size(); i++) {
+		for (int j = 0; j < adjacency_m.size(); j++) {
+			if (adjacency_m[i][j] != 0)
+				bandwidth_m[i][j] = rand() % (max_weight - 1) + 1;
 		}
 	}
 }
