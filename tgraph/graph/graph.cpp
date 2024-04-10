@@ -326,8 +326,62 @@ bool graph::BellmanFord(int start_v, int end_v, bool find_max_path) {
 	return true; // Отрицательных циклов нет
 }
 
+// Метод для поиска пути с помощью обхода в глубину (DFS)
+bool graph::dfs(int start_v, int end_v, std::vector<int>& predecessors, const std::vector<std::vector<int>>& bandwidth_m) {
+	std::vector<bool> visited(vertices_num, false);
+	std::stack<int> stack;
+	stack.push(start_v);
+	while (!stack.empty()) {
+		int u = stack.top();
+		stack.pop();
+		if (!visited[u]) {
+			visited[u] = true;
+			for (int v = 0; v < vertices_num; v++) {
+				if (!visited[v] && bandwidth_m[u][v] > 0) {
+					predecessors[v] = u; // обновляем предшественника вершины
+					stack.push(v);
+					if (v == end_v) // Если мы достигли стока, путь найден
+						return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+
+// Алгоритм Форда-Фалкерсона для нахождения максимального потока
+int graph::FordFulkerson(int start_v, int end_v) {
+	std::vector<std::vector<int>> bandwidth_m_copy = bandwidth_m;
+	std::vector<int> predecessors(vertices_num); // массив для хранения пути
+	int max_flow = 0;
+
+	// Пока существует путь от истока к стоку
+	while (dfs(start_v, end_v, predecessors, bandwidth_m_copy)) {
+		int path_flow = INT_MAX;
+
+		// Найти минимальную пропускную способность в пути
+		for (int v = end_v; v != start_v; v = predecessors[v]) {
+			int u = predecessors[v];
+			path_flow = std::min(path_flow, bandwidth_m_copy[u][v]);
+		}
+
+		// Обновить пропускные способности и обратные ребра в пути
+		for (int v = end_v; v != start_v; v = predecessors[v]) {
+			int u = predecessors[v];
+			bandwidth_m_copy[u][v] -= path_flow;
+			bandwidth_m_copy[v][u] += path_flow;
+		}
+
+		// Добавить поток пути к общему максимальному потоку
+		max_flow += path_flow;
+	}
+
+	return max_flow;
+}
 
 std::vector<int> graph::get_path(int start_v, int end_v, const std::vector<int>& predecessors) {
+	// поиск пути из одной вершины в другую с учетом того, какой вершине какая в этом пути предшествовала 
 	std::vector<int> path;
 	if (predecessors[end_v] == -1) {
 		return path; // Путь не существует
@@ -357,6 +411,15 @@ void graph::printWeightMatrix() {
 	for (int i = 0; i < weight_m.size(); i++) {
 		for (int j = 0; j < weight_m.size(); j++) {
 			std::cout << std::right << std::setw(width) << weight_m[i][j] << ' ';
+		}
+		std::cout << '\n';
+	}
+}
+
+void graph::printBandwidthMatrix() {
+	for (int i = 0; i < bandwidth_m.size(); i++) {
+		for (int j = 0; j < bandwidth_m.size(); j++) {
+			std::cout << std::right << std::setw(width) << bandwidth_m[i][j] << ' ';
 		}
 		std::cout << '\n';
 	}

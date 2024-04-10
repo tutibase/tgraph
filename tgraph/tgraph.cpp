@@ -19,6 +19,7 @@ int main() {
 
     //myGraph.weight_m = { {0,3,1,5,0}, {0,0,0,0,2}, {0,1,0,0,4}, {0,0,2,0,4}, {0,0,0,0,0} };
     //myGraph.adjacency_m = { {0,1,1,1,0}, {0,0,0,0,1}, {0,1,0,0,1}, {0,0,1,0,1}, {0,0,0,0,0} };
+    //myGraph.bandwidth_m = { {0,3,1,5,0}, {0,0,0,0,2}, {0,1,0,0,4}, {0,0,2,0,4}, {0,0,0,0,0} };
   
     // menu
     int i = 1;
@@ -106,12 +107,36 @@ int main() {
             myGraph = graph(distribution.getDistribution());
             break;
 
+        case 11:
+            std::cout << "Max flow: " << myGraph.FordFulkerson(0, myGraph.getVerticesNum() - 1) << std::endl;
+            break;
+
+        case 12:
+            myGraph.printBandwidthMatrix();
+            break;
+
         default:
             break;
         }
 
-        if (flag) i = intInput("\nEnter a number\n", 10);
+        if (flag) i = intInput("\nEnter a number\n", 12);
     }
 
     return 0;
+}
+
+void help() {
+    std::cout << "\n\n[0] - exit" << '\n';
+    std::cout << "[1] - help" << '\n';
+    std::cout << "[2] - print adjacency matrix" << '\n';
+    std::cout << "[3] - print weight matrix" << '\n';
+    std::cout << "[4] - Shimbell method" << '\n';
+    std::cout << "[5] - check reachability" << '\n';
+    std::cout << "[6] - regenerate weight matrix" << '\n';
+    std::cout << "[7] - Dijkstra's algorithm" << '\n';
+    std::cout << "[8] - Bellman-Ford algorithm" << '\n';
+    std::cout << "[9] - Maximum path" << '\n';
+    std::cout << "[10] - regenerate graph" << '\n';
+    std::cout << "[11] - Ford-Fulkerson algorithm" << '\n';
+    std::cout << "[12] - print bandwidth matrix" << '\n';
 }

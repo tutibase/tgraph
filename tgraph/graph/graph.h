@@ -2,6 +2,8 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
+#include <stack>
+#include <algorithm>
 
 const int max_weight = 10;
 const int width = 3;
@@ -16,19 +18,18 @@ public:
 	void Dijkstra(int start_v, int end_v);
 	bool BellmanFord(int start_v, int end_v, bool find_max_path = 0);
 	void BellmanFordMaxPath(int start_v, int end_v);
+	int FordFulkerson(int start_v, int end_v);
 
 	void generareWeightMatrix(bool add_negative = 0);
-	void generareCostMatrix();
-	void generareBandwidthMatrix();
-
 
 	void printAdjacencyMatrix();
 	void printWeightMatrix();
+	void printBandwidthMatrix();
 
 	const std::vector<std::vector<bool>>& getAdjacencyMatrix() { return adjacency_m; };
 	const int& getVerticesNum() { return vertices_num; };
 	const int& getEdgesNum() { return edges_num; };
-	
+
 private:
 	int vertices_num; // количество вершин
 	int edges_num; // количество ребер
@@ -42,6 +43,9 @@ private:
 	std::vector<std::vector<int>> cost_m; // матрица стоимостей
 
 	std::vector<int> get_path(int start_v, int end_v, const std::vector<int>& predecessors);
+	bool dfs(int start_v, int end_v, std::vector<int>& predecessors, const std::vector<std::vector<int>>& bandwidth_m);
 
 	void generareAdjacencyMatrix(const std::vector<int>& distribution);
+	void generareCostMatrix();
+	void generareBandwidthMatrix();
 };
