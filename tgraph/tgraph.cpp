@@ -74,24 +74,24 @@ int main() {
 
         case 7:
         {
-            int a = intInput("1st vertex: ", myGraph.getVerticesNum());
-            int b = intInput("2nd vertex: ", myGraph.getVerticesNum());
+            int a = intInput("1st vertex: ", myGraph.getVerticesNum()-1);
+            int b = intInput("2nd vertex: ", myGraph.getVerticesNum()-1);
             myGraph.Dijkstra(a, b);
         }
             break;
 
         case 8:
         {
-            int a = intInput("1st vertex: ", myGraph.getVerticesNum());
-            int b = intInput("2nd vertex: ", myGraph.getVerticesNum());
+            int a = intInput("1st vertex: ", myGraph.getVerticesNum()-1);
+            int b = intInput("2nd vertex: ", myGraph.getVerticesNum()-1);
             myGraph.BellmanFord(a, b);
         }
         break;
 
         case 9:
         {
-            int a = intInput("1st vertex: ", myGraph.getVerticesNum());
-            int b = intInput("2nd vertex: ", myGraph.getVerticesNum());
+            int a = intInput("1st vertex: ", myGraph.getVerticesNum()-1);
+            int b = intInput("2nd vertex: ", myGraph.getVerticesNum()-1);
             myGraph.BellmanFord(a, b, 1);
         }
         break;
