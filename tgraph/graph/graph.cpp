@@ -326,8 +326,8 @@ bool graph::BellmanFord(int start_v, int end_v, bool find_max_path) {
 	return true; // Отрицательных циклов нет
 }
 
-std::vector<int> graph::BellmanFordPath(int start_v, int end_v) {
-	// алгоритм Беллмана-Форда, модифицированный только на поиск пути в подходящем графе
+std::vector<int> graph::BellmanFordPath(int start_v, int end_v, const std::vector<std::vector<int>>& cost_m_copy) {
+	// алгоритм Беллмана-Форда, модифицированный только на поиск пути минимальной стоимости в подходящем графе
 	// метод вернет вектор номеров вершин минимального пути в графе
 	int inf = INT_MAX;
 
@@ -340,11 +340,11 @@ std::vector<int> graph::BellmanFordPath(int start_v, int end_v) {
 	for (int i = 0; i < vertices_num - 1; i++) {
 		for (int u = 0; u < vertices_num; u++) {
 			for (int v = 0; v < vertices_num; v++) {
-				if (bandwidth_m[u][v] != 0) {
-					bool comparison = distances[u] + bandwidth_m[u][v] < distances[v];
+				if (cost_m_copy[u][v] != 0) {
+					bool comparison = distances[u] + cost_m_copy[u][v] < distances[v];
 
 					if (distances[u] != inf && comparison) {
-						distances[v] = distances[u] + bandwidth_m[u][v];
+						distances[v] = distances[u] + cost_m_copy[u][v];
 						predecessors[v] = u;
 					}
 				}
@@ -356,7 +356,7 @@ std::vector<int> graph::BellmanFordPath(int start_v, int end_v) {
 }
 
 // Метод для поиска пути с помощью обхода в глубину (DFS)
-bool graph::dfs(int start_v, int end_v, std::vector<int>& predecessors, const std::vector<std::vector<int>>& bandwidth_m) {
+bool graph::dfs(int start_v, int end_v, std::vector<int>& predecessors, const std::vector<std::vector<int>>& bandwidth_m_copy) {
 	std::vector<bool> visited(vertices_num, false);
 	std::stack<int> stack;
 	stack.push(start_v);
@@ -366,7 +366,7 @@ bool graph::dfs(int start_v, int end_v, std::vector<int>& predecessors, const st
 		if (!visited[u]) {
 			visited[u] = true;
 			for (int v = 0; v < vertices_num; v++) {
-				if (!visited[v] && bandwidth_m[u][v] > 0) {
+				if (!visited[v] && bandwidth_m_copy[u][v] > 0) {
 					predecessors[v] = u; // обновляем предшественника вершины
 					stack.push(v);
 					if (v == end_v) // Если мы достигли стока, путь найден

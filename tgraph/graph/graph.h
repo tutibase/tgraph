@@ -28,7 +28,7 @@ public:
 	const std::vector<std::vector<bool>>& getAdjacencyMatrix() { return adjacency_m; };
 	const int& getVerticesNum() { return vertices_num; };
 	const int& getEdgesNum() { return edges_num; };
-	std::vector<int> BellmanFordPath(int start_v, int end_v);
+
 private:
 	int vertices_num; // количество вершин
 	int edges_num; // количество ребер
@@ -42,8 +42,8 @@ private:
 	std::vector<std::vector<int>> cost_m; // матрица стоимостей
 
 	std::vector<int> get_path(int start_v, int end_v, const std::vector<int>& predecessors);
-	bool dfs(int start_v, int end_v, std::vector<int>& predecessors, const std::vector<std::vector<int>>& bandwidth_m);
-	
+	bool dfs(int start_v, int end_v, std::vector<int>& predecessors, const std::vector<std::vector<int>>& bandwidth_m_copy);
+	std::vector<int> BellmanFordPath(int start_v, int end_v, const std::vector<std::vector<int>>& cost_m_copy);
 
 	void generareAdjacencyMatrix(const std::vector<int>& distribution);
 	void generareCostMatrix();
