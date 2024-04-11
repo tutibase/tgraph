@@ -326,6 +326,35 @@ bool graph::BellmanFord(int start_v, int end_v, bool find_max_path) {
 	return true; // Отрицательных циклов нет
 }
 
+std::vector<int> graph::BellmanFordPath(int start_v, int end_v) {
+	// алгоритм Беллмана-Форда, модифицированный только на поиск пути в подходящем графе
+	// метод вернет вектор номеров вершин минимального пути в графе
+	int inf = INT_MAX;
+
+	std::vector<int>distances = std::vector<int>(vertices_num, inf); // расстояния до вершин
+	std::vector<int> predecessors = std::vector<int>(vertices_num, -1);	// Хранит предшественников вершин
+
+	distances[start_v] = 0;
+
+	// Основной цикл: (V-1) раз пройтись по всем рёбрам
+	for (int i = 0; i < vertices_num - 1; i++) {
+		for (int u = 0; u < vertices_num; u++) {
+			for (int v = 0; v < vertices_num; v++) {
+				if (bandwidth_m[u][v] != 0) {
+					bool comparison = distances[u] + bandwidth_m[u][v] < distances[v];
+
+					if (distances[u] != inf && comparison) {
+						distances[v] = distances[u] + bandwidth_m[u][v];
+						predecessors[v] = u;
+					}
+				}
+			}
+		}
+	}
+
+	return get_path(start_v, end_v, predecessors);
+}
+
 // Метод для поиска пути с помощью обхода в глубину (DFS)
 bool graph::dfs(int start_v, int end_v, std::vector<int>& predecessors, const std::vector<std::vector<int>>& bandwidth_m) {
 	std::vector<bool> visited(vertices_num, false);
