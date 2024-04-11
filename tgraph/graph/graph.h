@@ -18,6 +18,7 @@ public:
 	void Dijkstra(int start_v, int end_v);
 	bool BellmanFord(int start_v, int end_v, bool find_max_path = 0);
 	int FordFulkerson(int start_v, int end_v);
+	int minCostFlow();
 
 	void generareWeightMatrix(bool add_negative = 0);
 

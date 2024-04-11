@@ -409,6 +409,43 @@ int graph::FordFulkerson(int start_v, int end_v) {
 	return max_flow;
 }
 
+int graph::minCostFlow() {
+	// поиск потока минималной стоимости, составляющим 2/3 от максимального потока
+	int max_flow = 2 / 3. * (FordFulkerson(0, getVerticesNum() - 1));
+	if (max_flow == 0) return 0;
+
+	int cost_flow = 0;
+	std::vector<std::vector<int>> bandwidth_m_copy = bandwidth_m;
+	std::vector<std::vector<int>> cost_m_copy = cost_m;
+	
+	std::vector<int> min_path = BellmanFordPath(0, vertices_num - 1, cost_m_copy);
+	//BellmanFord(0, vertices_num - 1);
+	while (!min_path.empty() and max_flow != 0) {
+		int path_flow = INT_MAX;
+		int path_cost = 0;
+		// поиск стоимости пути и потока пути
+		for (int i = 0; i < min_path.size() - 1; i++) {
+			path_flow = std::min(path_flow, bandwidth_m_copy[min_path[i]][min_path[i + 1]]);
+			path_cost += cost_m_copy[min_path[i]][min_path[i + 1]];
+		}
+
+		while (path_flow != 0 and max_flow != 0) {
+			for (int i = 0; i < min_path.size() - 1; i++) {
+				bandwidth_m_copy[min_path[i]][min_path[i + 1]]--;
+				// если поток через ребро заполнен, то удаляем ребро
+				if (bandwidth_m_copy[min_path[i]][min_path[i + 1]] == 0)
+					cost_m_copy[min_path[i]][min_path[i + 1]] = 0;
+			}
+			cost_flow += path_cost;
+			max_flow--;
+			path_flow--;
+		}
+		min_path = BellmanFordPath(0, vertices_num - 1, cost_m_copy);
+	}
+	return cost_flow;
+}
+
+
 std::vector<int> graph::get_path(int start_v, int end_v, const std::vector<int>& predecessors) {
 	// поиск пути из одной вершины в другую с учетом того, какой вершине какая в этом пути предшествовала 
 	std::vector<int> path;

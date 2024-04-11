@@ -17,9 +17,10 @@ int main() {
     // generate graph
     graph myGraph(distribution.getDistribution());
 
-    //myGraph.weight_m = { {0,3,1,5,0}, {0,0,0,0,2}, {0,1,0,0,4}, {0,0,2,0,4}, {0,0,0,0,0} };
-    //myGraph.adjacency_m = { {0,1,1,1,0}, {0,0,0,0,1}, {0,1,0,0,1}, {0,0,1,0,1}, {0,0,0,0,0} };
-    //myGraph.bandwidth_m = { {0,3,1,5,0}, {0,0,0,0,2}, {0,1,0,0,4}, {0,0,2,0,4}, {0,0,0,0,0} };
+    /*myGraph.weight_m = { {0,3,1,5,0}, {0,0,0,0,2}, {0,1,0,0,4}, {0,0,2,0,4}, {0,0,0,0,0} };
+    myGraph.cost_m = { {0,3,1,5,0}, {0,0,0,0,2}, {0,1,0,0,4}, {0,0,2,0,4}, {0,0,0,0,0} };
+    myGraph.adjacency_m = { {0,1,1,1,0}, {0,0,0,0,1}, {0,1,0,0,1}, {0,0,1,0,1}, {0,0,0,0,0} };
+    myGraph.bandwidth_m = { {0,3,1,5,0}, {0,0,0,0,2}, {0,1,0,0,4}, {0,0,2,0,4}, {0,0,0,0,0} };*/
   
     // menu
     int i = 1;
@@ -98,7 +99,7 @@ int main() {
         break;
 
         case 10:
-            size = intInput("Enter the number of vertices of the graph: ", 15);
+            size = intInput("Enter the number of vertices of the graph: ", 100);
             distribution = negative_hypergeometric(size);
             distribution.generate();
             std::cout << "Preliminary distribution of the degrees of the vertices of the graph:\n";
@@ -115,11 +116,15 @@ int main() {
             myGraph.printBandwidthMatrix();
             break;
 
+        case 13:
+            std::cout << "Min cost flow: " << myGraph.minCostFlow() << std::endl;
+            break;
+
         default:
             break;
         }
 
-        if (flag) i = intInput("\nEnter a number\n", 12);
+        if (flag) i = intInput("\nEnter a number\n", 13);
     }
 
     return 0;
@@ -139,4 +144,5 @@ void help() {
     std::cout << "[10] - regenerate graph" << '\n';
     std::cout << "[11] - Ford-Fulkerson algorithm" << '\n';
     std::cout << "[12] - print bandwidth matrix" << '\n';
+    std::cout << "[13] - min cost flow" << '\n';
 }
