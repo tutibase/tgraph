@@ -18,18 +18,24 @@
     <ClCompile Include="tgraph.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="graph\graph.cpp">
+    <ClCompile Include="graph\OrientedGraph.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="distribution\distribution.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="graph\UnorientedGraph.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graph\graph.h">
+    <ClInclude Include="graph\OrientedGraph.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="distribution\distribution.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="graph\UnorientedGraph.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

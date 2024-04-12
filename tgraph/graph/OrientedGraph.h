@@ -8,10 +8,10 @@
 const int max_weight = 10;
 const int width = 3;
 
-class graph {
+class OrientedGraph {
 public:
-	graph(const int& size);
-	graph(const std::vector<int>& distribution);
+	OrientedGraph(const int& size);
+	OrientedGraph(const std::vector<int>& distribution);
 
 	std::vector<std::vector<int>> ShimbellMethod(const int& edges_num, const bool& flag = 0);
 	int reachabilityCheck(const int& a, const int& b);

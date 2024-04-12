@@ -1,6 +1,6 @@
-﻿#include "graph.h"
+﻿#include "OrientedGraph.h"
 
-graph::graph(const int& size) {
+OrientedGraph::OrientedGraph(const int& size) {
 	// генерация пустого графа размера size
 	this->vertices_num = size;
 	adjacency_m = {};
@@ -13,7 +13,7 @@ graph::graph(const int& size) {
 	generareBandwidthMatrix();
 }
 
-graph::graph(const std::vector<int>& distribution) {
+OrientedGraph::OrientedGraph(const std::vector<int>& distribution) {
 	// генерация графа по распределению
 	this->vertices_num = distribution.size();
 	adjacency_m = {};
@@ -27,7 +27,7 @@ graph::graph(const std::vector<int>& distribution) {
 	generareBandwidthMatrix();
 }
 
-void graph::generareAdjacencyMatrix(const std::vector<int>& distribution) {
+void OrientedGraph::generareAdjacencyMatrix(const std::vector<int>& distribution) {
 	for (int i = 0; i < vertices_num; i++) {
 		int upper_lim = (vertices_num - i - 1 > distribution[i]) ? (distribution[i]) : (vertices_num - i - 1);
 		if (upper_lim == 0 and i != vertices_num - 1) {
@@ -47,7 +47,7 @@ void graph::generareAdjacencyMatrix(const std::vector<int>& distribution) {
 	}
 }
 
-void graph::generareWeightMatrix(bool add_negative) {
+void OrientedGraph::generareWeightMatrix(bool add_negative) {
 	// генерация матрицы весов на основе матрицы смежности
 	// если add_negative == 1, то половина весов будет отрицательной
 	negative_weights = add_negative;
@@ -68,7 +68,7 @@ void graph::generareWeightMatrix(bool add_negative) {
 	generareCostMatrix();
 }
 
-void graph::generareCostMatrix() {
+void OrientedGraph::generareCostMatrix() {
 	// генерация матрицы стоимостей на основе весовой
 	cost_m = {};
 	cost_m.resize(weight_m.size(), std::vector<int>(weight_m.size(), 0));
@@ -79,7 +79,7 @@ void graph::generareCostMatrix() {
 	}
 }
 
-void graph::generareBandwidthMatrix() {
+void OrientedGraph::generareBandwidthMatrix() {
 	// генерация матрицы пропускных способностей
 	bandwidth_m = {};
 	bandwidth_m.resize(adjacency_m.size(), std::vector<int>(adjacency_m.size(), 0));
@@ -91,7 +91,7 @@ void graph::generareBandwidthMatrix() {
 	}
 }
 
-std::vector<std::vector<int>> graph::ShimbellMethod(const int& edges_num, const bool& flag) {
+std::vector<std::vector<int>> OrientedGraph::ShimbellMethod(const int& edges_num, const bool& flag) {
 	// Метод поиска максимального/минимального пути между вершинами длиной в edges_num ребер \
 	flag = 1 - максимального, flag = 0 - минимального; по умолчанию поиск минимального
 
@@ -129,7 +129,7 @@ std::vector<std::vector<int>> graph::ShimbellMethod(const int& edges_num, const 
 	return shimbell_m;
 }
 
-int graph::reachabilityCheck(const int& a, const int& b) {
+int OrientedGraph::reachabilityCheck(const int& a, const int& b) {
 	// функция проверки достижимости из вершины с номером a в вершину с номером b
 	// result: количество таких маршрутов
 
@@ -176,7 +176,7 @@ int graph::reachabilityCheck(const int& a, const int& b) {
 	return reachability_m[a][b];
 }
 
-void graph::Dijkstra(int start_v, int end_v) {
+void OrientedGraph::Dijkstra(int start_v, int end_v) {
 	// алгоритм Дейкстры (поиск пути минимальной длины между вершинами)
 	// метод печатает путь от start_v до end_v и вектор расстояний от start_v до всех вершин
 	if (negative_weights == 1) {
@@ -259,7 +259,7 @@ void graph::Dijkstra(int start_v, int end_v) {
 }
 
 
-bool graph::BellmanFord(int start_v, int end_v, bool find_max_path) {
+bool OrientedGraph::BellmanFord(int start_v, int end_v, bool find_max_path) {
 	// алгоритм Беллмана-Форда
 	// если find_max_path == 1, то ищем максимальный путь, иначе (по умолчанию) минимальный
 	// метод печатает путь от start_v до end_v и вектор расстояний от start_v до всех вершин
@@ -326,7 +326,7 @@ bool graph::BellmanFord(int start_v, int end_v, bool find_max_path) {
 	return true; // Отрицательных циклов нет
 }
 
-std::vector<int> graph::BellmanFordPath(int start_v, int end_v, const std::vector<std::vector<int>>& cost_m_copy) {
+std::vector<int> OrientedGraph::BellmanFordPath(int start_v, int end_v, const std::vector<std::vector<int>>& cost_m_copy) {
 	// алгоритм Беллмана-Форда, модифицированный только на поиск пути минимальной стоимости в подходящем графе
 	// метод вернет вектор номеров вершин минимального пути в графе
 	int inf = INT_MAX;
@@ -356,7 +356,7 @@ std::vector<int> graph::BellmanFordPath(int start_v, int end_v, const std::vecto
 }
 
 // Метод для поиска пути с помощью обхода в глубину (DFS)
-bool graph::dfs(int start_v, int end_v, std::vector<int>& predecessors, const std::vector<std::vector<int>>& bandwidth_m_copy) {
+bool OrientedGraph::dfs(int start_v, int end_v, std::vector<int>& predecessors, const std::vector<std::vector<int>>& bandwidth_m_copy) {
 	std::vector<bool> visited(vertices_num, false);
 	std::stack<int> stack;
 	stack.push(start_v);
@@ -380,7 +380,7 @@ bool graph::dfs(int start_v, int end_v, std::vector<int>& predecessors, const st
 
 
 // Алгоритм Форда-Фалкерсона для нахождения максимального потока
-int graph::FordFulkerson(int start_v, int end_v) {
+int OrientedGraph::FordFulkerson(int start_v, int end_v) {
 	std::vector<std::vector<int>> bandwidth_m_copy = bandwidth_m;
 	std::vector<int> predecessors(vertices_num); // массив для хранения пути
 	int max_flow = 0;
@@ -409,7 +409,7 @@ int graph::FordFulkerson(int start_v, int end_v) {
 	return max_flow;
 }
 
-int graph::minCostFlow() {
+int OrientedGraph::minCostFlow() {
 	// поиск потока минимальной стоимости, составляющим 2/3 от максимального потока
 	int max_flow = 2 / 3. * (FordFulkerson(0, getVerticesNum() - 1));
 	if (max_flow == 0) return 0;
@@ -451,7 +451,7 @@ int graph::minCostFlow() {
 }
 
 
-std::vector<int> graph::get_path(int start_v, int end_v, const std::vector<int>& predecessors) {
+std::vector<int> OrientedGraph::get_path(int start_v, int end_v, const std::vector<int>& predecessors) {
 	// поиск пути из одной вершины в другую с учетом того, какой вершине какая в этом пути предшествовала 
 	std::vector<int> path;
 	if (predecessors[end_v] == -1) {
@@ -469,7 +469,7 @@ std::vector<int> graph::get_path(int start_v, int end_v, const std::vector<int>&
 	return path;
 }
 
-void graph::printAdjacencyMatrix() {
+void OrientedGraph::printAdjacencyMatrix() {
 	for (int i = 0; i < adjacency_m.size(); i++) {
 		for (int j = 0; j < adjacency_m.size(); j++) {
 			std::cout << adjacency_m[i][j] << ' ';
@@ -478,7 +478,7 @@ void graph::printAdjacencyMatrix() {
 	}
 }
 
-void graph::printWeightMatrix() {
+void OrientedGraph::printWeightMatrix() {
 	for (int i = 0; i < weight_m.size(); i++) {
 		for (int j = 0; j < weight_m.size(); j++) {
 			std::cout << std::right << std::setw(width) << weight_m[i][j] << ' ';
@@ -487,7 +487,7 @@ void graph::printWeightMatrix() {
 	}
 }
 
-void graph::printBandwidthMatrix() {
+void OrientedGraph::printBandwidthMatrix() {
 	for (int i = 0; i < bandwidth_m.size(); i++) {
 		for (int j = 0; j < bandwidth_m.size(); j++) {
 			std::cout << std::right << std::setw(width) << bandwidth_m[i][j] << ' ';

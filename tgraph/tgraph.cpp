@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include "distribution/distribution.h"
-#include "graph/graph.h"
+#include "graph/OrientedGraph.h"
+#include "graph/UnorientedGraph.h"
 
 int main() {
     srand(time(NULL));
@@ -14,8 +15,10 @@ int main() {
     std::cout << "Preliminary distribution of the degrees of the vertices of the graph:\n";
     distribution.printDistribution();
 
-    // generate graph
-    graph myGraph(distribution.getDistribution());
+    // generate graphs
+    OrientedGraph myGraph(distribution.getDistribution());
+    UnorientedGraph myUnorientedGraph(distribution.getDistribution());
+
 
     /*myGraph.weight_m = { {0,3,1,5,0}, {0,0,0,0,2}, {0,1,0,0,4}, {0,0,2,0,4}, {0,0,0,0,0} };
     myGraph.cost_m = { {0,3,1,5,0}, {0,0,0,0,2}, {0,1,0,0,4}, {0,0,2,0,4}, {0,0,0,0,0} };
@@ -105,7 +108,7 @@ int main() {
             std::cout << "Preliminary distribution of the degrees of the vertices of the graph:\n";
             distribution.printDistribution();
 
-            myGraph = graph(distribution.getDistribution());
+            myGraph = OrientedGraph(distribution.getDistribution());
             break;
 
         case 11:
@@ -120,11 +123,33 @@ int main() {
             std::cout << "Min cost flow: " << myGraph.minCostFlow() << std::endl;
             break;
 
+        case 14:
+            myUnorientedGraph.printAdjacencyMatrix();
+            break;
+
+        case 15:
+            myUnorientedGraph.printWeightMatrix();
+            break;
+
+        case 16:
+            myUnorientedGraph.generareWeightMatrix(intInput("Add negative weights?\n[0] - no, [1] - yes: ", 1));
+            break;
+
+        case 17:
+            size = intInput("Enter the number of vertices of the graph: ", 100);
+            distribution = negative_hypergeometric(size);
+            distribution.generate();
+            std::cout << "Preliminary distribution of the degrees of the vertices of the graph:\n";
+            distribution.printDistribution();
+
+            myUnorientedGraph = UnorientedGraph(distribution.getDistribution());
+            break;
+
         default:
             break;
         }
 
-        if (flag) i = intInput("\nEnter a number\n", 13);
+        if (flag) i = intInput("\nEnter a number\n", 17);
     }
 
     return 0;
@@ -144,5 +169,9 @@ void help() {
     std::cout << "[10] - regenerate graph" << '\n';
     std::cout << "[11] - Ford-Fulkerson algorithm" << '\n';
     std::cout << "[12] - print bandwidth matrix" << '\n';
-    std::cout << "[13] - min cost flow" << '\n';
+    std::cout << "\nUnoriented graph:\n";
+    std::cout << "[14] - print adjacency matrix" << '\n';
+    std::cout << "[15] - print weight matrix" << '\n';
+    std::cout << "[16] - regenerate weight matrix" << '\n';
+    std::cout << "[17] - regenerate graph" << '\n';
 }
