@@ -332,7 +332,7 @@ std::vector<int> graph::BellmanFordPath(int start_v, int end_v, const std::vecto
 	int inf = INT_MAX;
 
 	std::vector<int>distances = std::vector<int>(vertices_num, inf); // расстояния до вершин
-	std::vector<int> predecessors = std::vector<int>(vertices_num, -1);	// Хранит предшественников вершин
+	std::vector<int> predecessors = std::vector<int>(vertices_num, -1);	// предшественники вершин в минимальном пути до них
 
 	distances[start_v] = 0;
 
@@ -410,7 +410,7 @@ int graph::FordFulkerson(int start_v, int end_v) {
 }
 
 int graph::minCostFlow() {
-	// поиск потока минималной стоимости, составляющим 2/3 от максимального потока
+	// поиск потока минимальной стоимости, составляющим 2/3 от максимального потока
 	int max_flow = 2 / 3. * (FordFulkerson(0, getVerticesNum() - 1));
 	if (max_flow == 0) return 0;
 
@@ -418,8 +418,9 @@ int graph::minCostFlow() {
 	std::vector<std::vector<int>> bandwidth_m_copy = bandwidth_m;
 	std::vector<std::vector<int>> cost_m_copy = cost_m;
 	
+	// смотрим, какой путь стоит минимально
 	std::vector<int> min_path = BellmanFordPath(0, vertices_num - 1, cost_m_copy);
-	//BellmanFord(0, vertices_num - 1);
+	// пока существует путь и мы не разгрузили весь необходимый поток
 	while (!min_path.empty() and max_flow != 0) {
 		int path_flow = INT_MAX;
 		int path_cost = 0;
@@ -436,10 +437,14 @@ int graph::minCostFlow() {
 				if (bandwidth_m_copy[min_path[i]][min_path[i + 1]] == 0)
 					cost_m_copy[min_path[i]][min_path[i + 1]] = 0;
 			}
+			// добавляем к общей стоимости стоимость потока
 			cost_flow += path_cost;
+			// теперь осталось разгрузить на 1 единицу потока меньше
 			max_flow--;
+			// через данный путь можно разгрузить на 1 единицу потока меньше
 			path_flow--;
 		}
+		// смотрим, какой путь из оставшихся стоит минимально
 		min_path = BellmanFordPath(0, vertices_num - 1, cost_m_copy);
 	}
 	return cost_flow;
