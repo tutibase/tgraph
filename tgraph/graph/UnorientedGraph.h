@@ -16,6 +16,8 @@ public:
 	void generateWeightMatrix(bool add_negative = 0);
 	void generateKirchhoffMatrix();
 
+	int spanningTreesNum();
+
 
 private:
 	int vertices_num; // количество вершин
@@ -28,3 +30,5 @@ private:
 
 	void generateAdjacencyMatrix(const std::vector<int>& distribution);
 };
+
+int determinant(const std::vector<std::vector<int>>& matrix);

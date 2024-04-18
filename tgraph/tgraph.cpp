@@ -152,14 +152,18 @@ int main() {
 
         case 18:
             std::cout << "Kirchhoff matrix:\n";
-            myUnorientedGraph.generateKirchhoffMatrix();
             myUnorientedGraph.printKirchhoffMatrix();
             break;
+
+        case 19:
+            std::cout << "Number of spanning trees: " << myUnorientedGraph.spanningTreesNum();
+            break;
+
         default:
             break;
         }
 
-        if (flag) i = intInput("\nEnter a number\n", 18);
+        if (flag) i = intInput("\nEnter a number\n", 19);
     }
 
     return 0;
@@ -186,4 +190,6 @@ void help() {
     std::cout << "[15] - print weight matrix" << '\n';
     std::cout << "[16] - regenerate weight matrix" << '\n';
     std::cout << "[17] - regenerate graph" << '\n';
+    std::cout << "[18] - print Kirchhoff matrix" << '\n';
+    std::cout << "[19] - number of spanning trees" << '\n';
 }

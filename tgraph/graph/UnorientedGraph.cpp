@@ -8,6 +8,7 @@ UnorientedGraph::UnorientedGraph(const int& size) {
 	edges_num = 0;
 
 	generateWeightMatrix();
+	generateKirchhoffMatrix();
 }
 
 UnorientedGraph::UnorientedGraph(const std::vector<int>& distribution) {
@@ -19,6 +20,7 @@ UnorientedGraph::UnorientedGraph(const std::vector<int>& distribution) {
 
 	generateAdjacencyMatrix(distribution);
 	generateWeightMatrix();
+	generateKirchhoffMatrix();
 }
 
 void UnorientedGraph::generateAdjacencyMatrix(const std::vector<int>& distribution) {
@@ -81,6 +83,22 @@ void UnorientedGraph::generateKirchhoffMatrix() {
 }
 
 
+int UnorientedGraph::spanningTreesNum() {
+	// подсчет числа остовных деревьев в исходном графе с помощью матричной теоремы Кирхгофа
+	std::vector<std::vector<int>> minor = {};
+	minor.resize(kirchhoff_m.size()-1, std::vector<int>(kirchhoff_m.size()-1, 0));
+
+	// получаем минор матрицы без первых столбца и строки 
+	for (int i = 1; i < kirchhoff_m.size(); i++) {
+		for (int j = 1; j < kirchhoff_m.size(); j++) {
+			minor[i - 1][j - 1] = kirchhoff_m[i][j]; 
+		}
+	}
+
+	return determinant(minor);
+}
+
+
 void UnorientedGraph::printAdjacencyMatrix() {
 	for (int i = 0; i < adjacency_m.size(); i++) {
 		for (int j = 0; j < adjacency_m.size(); j++) {
@@ -106,4 +124,36 @@ void UnorientedGraph::printKirchhoffMatrix() {
 		}
 		std::cout << '\n';
 	}
+}
+
+int determinant(const std::vector<std::vector<int>>& matrix) {
+	// подсчет определителя матрицы
+	int n = matrix.size();
+	if (n == 1) {
+		// Базовый случай: определитель матрицы 1x1 равен единственному элементу
+		return matrix[0][0];
+	}
+
+	int det = 0;
+	int sign = 1;
+
+	for (int i = 0; i < n; i++) {
+		// Создаем подматрицу для минора
+		std::vector<std::vector<int>> submatrix;
+		for (int j = 1; j < n; j++) {
+			std::vector<int> row;
+			for (int k = 0; k < n; k++) {
+				if (k != i) {
+					row.push_back(matrix[j][k]);
+				}
+			}
+			submatrix.push_back(row);
+		}
+
+		// Рекурсивно вычисляем определитель подматрицы и добавляем в сумму
+		det += sign * matrix[0][i] * determinant(submatrix);
+		sign = -sign; // чередование знаков
+	}
+
+	return det;
 }
