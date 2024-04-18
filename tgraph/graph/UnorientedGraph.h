@@ -16,7 +16,8 @@ public:
 	void generateWeightMatrix(bool add_negative = 0);
 	void generateKirchhoffMatrix();
 
-	int spanningTreesNum();
+	int spanningTreesNum(); // количество минимальных остовных деревьев
+	void Prim();
 
 
 private:
@@ -29,6 +30,8 @@ private:
 	std::vector<std::vector<int>> kirchhoff_m; // матрица Кирхгофа
 
 	void generateAdjacencyMatrix(const std::vector<int>& distribution);
+	int findMinKey(std::vector<int>& distances, std::vector<bool>& mstSet);
+	void printMST(std::vector<int>& predecessors);
 };
 
 int determinant(const std::vector<std::vector<int>>& matrix);

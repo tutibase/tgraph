@@ -159,11 +159,15 @@ int main() {
             std::cout << "Number of spanning trees: " << myUnorientedGraph.spanningTreesNum();
             break;
 
+        case 20:
+            myUnorientedGraph.Prim();
+            break;
+
         default:
             break;
         }
 
-        if (flag) i = intInput("\nEnter a number\n", 19);
+        if (flag) i = intInput("\nEnter a number\n", 20);
     }
 
     return 0;
@@ -192,4 +196,5 @@ void help() {
     std::cout << "[17] - regenerate graph" << '\n';
     std::cout << "[18] - print Kirchhoff matrix" << '\n';
     std::cout << "[19] - number of spanning trees" << '\n';
+    std::cout << "[20] - Prim's algorithm" << '\n';
 }

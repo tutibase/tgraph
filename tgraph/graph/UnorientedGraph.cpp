@@ -84,7 +84,7 @@ void UnorientedGraph::generateKirchhoffMatrix() {
 
 
 int UnorientedGraph::spanningTreesNum() {
-	// подсчет числа остовных деревьев в исходном графе с помощью матричной теоремы Кирхгофа
+// подсчет числа остовных деревьев в исходном графе с помощью матричной теоремы Кирхгофа
 	std::vector<std::vector<int>> minor = {};
 	minor.resize(kirchhoff_m.size()-1, std::vector<int>(kirchhoff_m.size()-1, 0));
 
@@ -97,6 +97,63 @@ int UnorientedGraph::spanningTreesNum() {
 
 	return determinant(minor);
 }
+
+
+void UnorientedGraph::Prim() {
+// Поиск минимального остовного дерева с помощью алгоритма Прима
+	std::vector<int> predecessors(vertices_num); // предшетсвенники вершин в остове
+
+	// минимальный вес ребра, с помощью которого попали в вершину
+	std::vector<int> distances(vertices_num, INT_MAX);
+
+	// включена ли вершина в остов
+	std::vector<bool> mstSet(vertices_num, false);
+
+	// Начнем с нулевой вершины
+	distances[0] = 0;
+	predecessors[0] = -1; // Первая вершина всегда корень остова
+
+	for (int _ = 0; _ < vertices_num - 1; _++) {
+		// среди ещё не попавших в остов вершин выбираем такую, расстояние до которой сейчас минимально из вершин остова
+		int u = findMinKey(distances, mstSet);
+
+		// Добавление выбранной вершины в остов
+		mstSet[u] = true;
+
+		// Обновление значения distances и predecessors
+		for (int v = 0; v < vertices_num; v++) {
+			// distances[v] == INT_MAX для вершин, которые еще не добавлены в остов
+			// Обновляется только если weight_m[u][v] меньше distances[v] (новое расстояние меньше старого)
+			if (weight_m[u][v] && mstSet[v] == false && weight_m[u][v] < distances[v]) {
+				predecessors[v] = u;
+				distances[v] = weight_m[u][v];
+			}
+		}
+	}
+
+	// выводим построенное MST
+	printMST(predecessors);
+}
+
+int UnorientedGraph::findMinKey(std::vector<int>& distances, std::vector<bool>& mstSet) {
+	int min = INT_MAX;
+	int min_index = -1;
+
+	for (int v = 0; v < vertices_num; v++)
+		if (mstSet[v] == false && distances[v] < min) {
+			min = distances[v];
+			min_index = v;
+		}
+
+	return min_index;
+}
+
+void UnorientedGraph::printMST(std::vector<int>& predecessors) {
+	std::cout << "Minimum spanning tree:\n" << "Edge \tWeight\n";
+	for (int i = 1; i < vertices_num; i++)
+		std::cout << predecessors[i] << " - " << i << " \t" << weight_m[i][predecessors[i]] << " \n";
+}
+
 
 
 void UnorientedGraph::printAdjacencyMatrix() {
