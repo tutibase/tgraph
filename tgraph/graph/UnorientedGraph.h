@@ -11,8 +11,10 @@ public:
 
 	void printAdjacencyMatrix();
 	void printWeightMatrix();
+	void printKirchhoffMatrix();
 
-	void generareWeightMatrix(bool add_negative = 0);
+	void generateWeightMatrix(bool add_negative = 0);
+	void generateKirchhoffMatrix();
 
 
 private:
@@ -22,6 +24,7 @@ private:
 
 	std::vector<std::vector<int>> weight_m; // матрица весов
 	std::vector<std::vector<bool>> adjacency_m; // матрица смежности
+	std::vector<std::vector<int>> kirchhoff_m; // матрица Кирхгофа
 
-	void generareAdjacencyMatrix(const std::vector<int>& distribution);
+	void generateAdjacencyMatrix(const std::vector<int>& distribution);
 };

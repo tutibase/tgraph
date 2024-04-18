@@ -20,7 +20,7 @@ public:
 	int FordFulkerson(int start_v, int end_v);
 	int minCostFlow();
 
-	void generareWeightMatrix(bool add_negative = 0);
+	void generateWeightMatrix(bool add_negative = 0);
 
 	void printAdjacencyMatrix();
 	void printWeightMatrix();
@@ -46,7 +46,7 @@ private:
 	bool dfs(int start_v, int end_v, std::vector<int>& predecessors, const std::vector<std::vector<int>>& bandwidth_m_copy);
 	std::vector<int> BellmanFordPath(int start_v, int end_v, const std::vector<std::vector<int>>& cost_m_copy);
 
-	void generareAdjacencyMatrix(const std::vector<int>& distribution);
-	void generareCostMatrix();
-	void generareBandwidthMatrix();
+	void generateAdjacencyMatrix(const std::vector<int>& distribution);
+	void generateCostMatrix();
+	void generateBandwidthMatrix();
 };

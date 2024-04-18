@@ -39,10 +39,12 @@ int main() {
             break;
 
         case 2:
+            std::cout << "Adjacency matrix:\n";
             myGraph.printAdjacencyMatrix();
             break;
 
         case 3:
+            std::cout << "Weight matrix:\n";
             myGraph.printWeightMatrix();
             break;
 
@@ -74,7 +76,7 @@ int main() {
             break;
 
         case 6:
-            myGraph.generareWeightMatrix(intInput("Add negative weights?\n[0] - no, [1] - yes: ", 1));
+            myGraph.generateWeightMatrix(intInput("Add negative weights?\n[0] - no, [1] - yes: ", 1));
             break;
 
         case 7:
@@ -116,23 +118,26 @@ int main() {
             break;
 
         case 12:
+            std::cout << "Bandwidth matrix:\n";
             myGraph.printBandwidthMatrix();
             break;
 
         case 13:
-            std::cout << "Min cost flow: " << myGraph.minCostFlow() << std::endl;
+            std::cout << "\n\nMin cost flow: " << myGraph.minCostFlow() << std::endl;
             break;
 
         case 14:
+            std::cout << "Adjacency matrix:\n";
             myUnorientedGraph.printAdjacencyMatrix();
             break;
 
         case 15:
+            std::cout << "Weight matrix:\n";
             myUnorientedGraph.printWeightMatrix();
             break;
 
         case 16:
-            myUnorientedGraph.generareWeightMatrix(intInput("Add negative weights?\n[0] - no, [1] - yes: ", 1));
+            myUnorientedGraph.generateWeightMatrix(intInput("Add negative weights?\n[0] - no, [1] - yes: ", 1));
             break;
 
         case 17:
@@ -145,11 +150,16 @@ int main() {
             myUnorientedGraph = UnorientedGraph(distribution.getDistribution());
             break;
 
+        case 18:
+            std::cout << "Kirchhoff matrix:\n";
+            myUnorientedGraph.generateKirchhoffMatrix();
+            myUnorientedGraph.printKirchhoffMatrix();
+            break;
         default:
             break;
         }
 
-        if (flag) i = intInput("\nEnter a number\n", 17);
+        if (flag) i = intInput("\nEnter a number\n", 18);
     }
 
     return 0;
@@ -169,6 +179,8 @@ void help() {
     std::cout << "[10] - regenerate graph" << '\n';
     std::cout << "[11] - Ford-Fulkerson algorithm" << '\n';
     std::cout << "[12] - print bandwidth matrix" << '\n';
+    std::cout << "[13] - min cost flow" << '\n';
+
     std::cout << "\nUnoriented graph:\n";
     std::cout << "[14] - print adjacency matrix" << '\n';
     std::cout << "[15] - print weight matrix" << '\n';

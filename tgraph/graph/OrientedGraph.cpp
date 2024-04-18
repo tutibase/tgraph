@@ -7,10 +7,10 @@ OrientedGraph::OrientedGraph(const int& size) {
 	adjacency_m.resize(size, std::vector<bool>(size, 0));
 	edges_num = 0;
 
-	generareWeightMatrix();
+	generateWeightMatrix();
 	reachability_m = {};
 
-	generareBandwidthMatrix();
+	generateBandwidthMatrix();
 }
 
 OrientedGraph::OrientedGraph(const std::vector<int>& distribution) {
@@ -20,14 +20,14 @@ OrientedGraph::OrientedGraph(const std::vector<int>& distribution) {
 	adjacency_m.resize(vertices_num, std::vector<bool>(vertices_num, 0));
 	edges_num = 0;
 	
-	generareAdjacencyMatrix(distribution);
-	generareWeightMatrix();
+	generateAdjacencyMatrix(distribution);
+	generateWeightMatrix();
 	reachability_m = {};
 
-	generareBandwidthMatrix();
+	generateBandwidthMatrix();
 }
 
-void OrientedGraph::generareAdjacencyMatrix(const std::vector<int>& distribution) {
+void OrientedGraph::generateAdjacencyMatrix(const std::vector<int>& distribution) {
 	for (int i = 0; i < vertices_num; i++) {
 		int upper_lim = (vertices_num - i - 1 > distribution[i]) ? (distribution[i]) : (vertices_num - i - 1);
 		if (upper_lim == 0 and i != vertices_num - 1) {
@@ -47,7 +47,7 @@ void OrientedGraph::generareAdjacencyMatrix(const std::vector<int>& distribution
 	}
 }
 
-void OrientedGraph::generareWeightMatrix(bool add_negative) {
+void OrientedGraph::generateWeightMatrix(bool add_negative) {
 	// генерация матрицы весов на основе матрицы смежности
 	// если add_negative == 1, то половина весов будет отрицательной
 	negative_weights = add_negative;
@@ -65,10 +65,10 @@ void OrientedGraph::generareWeightMatrix(bool add_negative) {
 			}
 		}
 	}
-	generareCostMatrix();
+	generateCostMatrix();
 }
 
-void OrientedGraph::generareCostMatrix() {
+void OrientedGraph::generateCostMatrix() {
 	// генерация матрицы стоимостей на основе весовой
 	cost_m = {};
 	cost_m.resize(weight_m.size(), std::vector<int>(weight_m.size(), 0));
@@ -79,7 +79,7 @@ void OrientedGraph::generareCostMatrix() {
 	}
 }
 
-void OrientedGraph::generareBandwidthMatrix() {
+void OrientedGraph::generateBandwidthMatrix() {
 	// генерация матрицы пропускных способностей
 	bandwidth_m = {};
 	bandwidth_m.resize(adjacency_m.size(), std::vector<int>(adjacency_m.size(), 0));
@@ -424,12 +424,20 @@ int OrientedGraph::minCostFlow() {
 	while (!min_path.empty() and max_flow != 0) {
 		int path_flow = INT_MAX;
 		int path_cost = 0;
+		std::cout << "\n\current path: ";
+		for (int i = 0; i < min_path.size(); i++) {
+			std::cout << min_path[i];
+			if (i != min_path.size() - 1) std::cout << " -> ";
+		}
+		
 		// поиск стоимости пути и потока пути
 		for (int i = 0; i < min_path.size() - 1; i++) {
 			path_flow = std::min(path_flow, bandwidth_m_copy[min_path[i]][min_path[i + 1]]);
 			path_cost += cost_m_copy[min_path[i]][min_path[i + 1]];
 		}
-
+		std::cout << "\npath cost: " << path_cost;
+		
+		int counter = 0; // счетчик потока по данному пути
 		while (path_flow != 0 and max_flow != 0) {
 			for (int i = 0; i < min_path.size() - 1; i++) {
 				bandwidth_m_copy[min_path[i]][min_path[i + 1]]--;
@@ -443,8 +451,10 @@ int OrientedGraph::minCostFlow() {
 			max_flow--;
 			// через данный путь можно разгрузить на 1 единицу потока меньше
 			path_flow--;
+			counter++;
 		}
 		// смотрим, какой путь из оставшихся стоит минимально
+		std::cout << "\nflow along the way: " << counter;
 		min_path = BellmanFordPath(0, vertices_num - 1, cost_m_copy);
 	}
 	return cost_flow;
