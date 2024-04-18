@@ -167,11 +167,15 @@ int main() {
             myUnorientedGraph.Boruvka();
             break;
 
+        case 22:
+            myUnorientedGraph.generatePruferCode(myUnorientedGraph.getPredecessorsPrim());
+            break;
+
         default:
             break;
         }
 
-        if (flag) i = intInput("\nEnter a number\n", 21);
+        if (flag) i = intInput("\nEnter a number\n", 22);
     }
 
     return 0;
@@ -202,4 +206,5 @@ void help() {
     std::cout << "[19] - number of spanning trees" << '\n';
     std::cout << "[20] - Prim's algorithm" << '\n';
     std::cout << "[21] - Boruvka's algorithm" << '\n';
+    std::cout << "[22] - generate Prufer code" << '\n';
 }

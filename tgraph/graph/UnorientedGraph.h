@@ -20,6 +20,9 @@ public:
 	int spanningTreesNum(); // количество минимальных остовных деревьев
 	void Prim();
 	void Boruvka();
+	void generatePruferCode(const std::vector<int>& predecessors);
+
+	const std::vector<int>& getPredecessorsPrim() { return predecessors_Prim; };
 
 
 private:
@@ -30,6 +33,11 @@ private:
 	std::vector<std::vector<int>> weight_m; // матрица весов
 	std::vector<std::vector<bool>> adjacency_m; // матрица смежности
 	std::vector<std::vector<int>> kirchhoff_m; // матрица Кирхгофа
+
+	std::vector<int> predecessors_Prim; // предшественники вершин MST  
+
+	std::vector<int> prufer_code; // Вектор для сохранения кода Прюфера
+	std::vector<int> prufer_code_weights; // Вектор для сохранения весов кода Прюфера
 
 	void generateAdjacencyMatrix(const std::vector<int>& distribution);
 	int findMinDist(std::vector<int>& distances, std::vector<bool>& mstSet);

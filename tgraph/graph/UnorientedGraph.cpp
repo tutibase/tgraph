@@ -133,6 +133,14 @@ void UnorientedGraph::Prim() {
 		}
 	}
 
+	for (int v : predecessors) {
+		if (v == 0) {
+			predecessors[0] = v;
+			break;
+		}
+	}
+	predecessors_Prim = predecessors;
+
 	// выводим построенное MST
 	printMST(predecessors);
 	std::cout << "\nIterations num: " << count_iter;
@@ -170,7 +178,7 @@ void UnorientedGraph::Boruvka() {
 	std::iota(parent.begin(), parent.end(), 0); // Инициализируем parent[i] = i
 
 	int numTrees = vertices_num; // изначально каждая вершина - это отдельное дерево
-	int MSTweight = 0; // Вес остова
+	int MST_weight = 0; // Вес остова
 
 	// Продолжаем объединять компоненты, пока не останется только одна компонента
 	while (numTrees > 1) {
@@ -200,7 +208,7 @@ void UnorientedGraph::Boruvka() {
 				int set_v = find(v, parent);
 
 				if (set_u != set_v) {
-					MSTweight += weight_m[u][v];
+					MST_weight += weight_m[u][v];
 					std::cout << u << " - " << v << " \t" << weight_m[u][v] << " \n";
 					union_sets(set_u, set_v, parent, rank);
 					numTrees--;
@@ -209,7 +217,7 @@ void UnorientedGraph::Boruvka() {
 		}
 	}
 
-	std::cout << "Total weight of Minimum Spanning Tree is " << MSTweight << std::endl;
+	std::cout << "Total weight of Minimum Spanning Tree is " << MST_weight << std::endl;
 	std::cout << "\nIterations num: " << count_iter;
 }
 
@@ -234,6 +242,62 @@ void UnorientedGraph::union_sets(int u, int v, std::vector<int>& parent, std::ve
 			rank[u]++;
 		}
 	}
+}
+
+
+void UnorientedGraph::generatePruferCode(const std::vector<int>& predecessors) {
+	// Генерация кода Прюфера для хранения остова
+	int n = predecessors.size();  // Получаем количество вершин в остове
+
+	std::vector<int> vertex_degree(n, 0);  // вектор для хранения степеней вершин
+
+	// Вычисляем степени всех вершин
+	for (int i = 0; i < n; i++) {
+		if (predecessors[i] != -1) {
+			vertex_degree[i]++;  // Увеличиваем степень текущей вершины
+			vertex_degree[predecessors[i]]++;  // Увеличиваем степень родителя текущей вершины
+		}
+	}
+
+	int ptr = 0; // Указатель на вершину с минимальным номером и степенью 1
+	while (vertex_degree[ptr] != 1) {
+		ptr++;
+	}
+
+	int leaf = ptr; // текущий лист дерева (сначала самый маленький по номеру)
+	std::vector<int> prufer_code; // Вектор для сохранения кода Прюфера
+	std::vector<int> prufer_code_weights; // Вектор для сохранения весов
+
+	// Генерируем код 
+	for (int i = 0; i < n - 2; i++) {
+		int next = predecessors[leaf]; // next — родитель текущего листа
+		prufer_code.push_back(next); // Добавляем родителя текущего листа в код Прюфера
+		prufer_code_weights.push_back(weight_m[next][leaf]); // добавляем вес 
+		vertex_degree[leaf]--;  // Уменьшаем степень листа
+		vertex_degree[next]--;  // Уменьшаем степень родителя
+
+		// ищем новый лист с минимальным номером, пропускаем вершины, которые не являются листьями
+		ptr = 0;
+		while (ptr < n and vertex_degree[ptr] != 1) {
+			ptr++;
+		}
+
+		leaf = ptr; // Новый лист для следующего шага
+	}
+
+	// сохраняем код
+	this->prufer_code = prufer_code;
+	this->prufer_code_weights = prufer_code_weights;
+
+	// Выводим код Прюфера
+	std::cout << "Prufer Code:\n";
+	for (int i = 0; i < prufer_code.size(); i++) {
+		std::cout << '(' << this->prufer_code[i] << "; " << this->prufer_code_weights[i] << ")\n"; // Вывод каждого элемента кода Прюфера
+		std::cout << '(' << prufer_code[i] << "; " << prufer_code_weights[i] << ")\n"; // Вывод каждого элемента кода Прюфера
+	}
+	std::cout << "\n";
+
+
 }
 
 
