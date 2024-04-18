@@ -101,6 +101,7 @@ int UnorientedGraph::spanningTreesNum() {
 
 void UnorientedGraph::Prim() {
 // Поиск минимального остовного дерева с помощью алгоритма Прима
+	int count_iter = 0;
 	std::vector<int> predecessors(vertices_num); // предшетсвенники вершин в остове
 
 	// минимальный вес ребра, с помощью которого попали в вершину
@@ -115,7 +116,7 @@ void UnorientedGraph::Prim() {
 
 	for (int _ = 0; _ < vertices_num - 1; _++) {
 		// среди ещё не попавших в остов вершин выбираем такую, расстояние до которой сейчас минимально из вершин остова
-		int u = findMinKey(distances, mstSet);
+		int u = findMinDist(distances, mstSet);
 
 		// Добавление выбранной вершины в остов
 		mstSet[u] = true;
@@ -128,14 +129,16 @@ void UnorientedGraph::Prim() {
 				predecessors[v] = u;
 				distances[v] = weight_m[u][v];
 			}
+			count_iter++;
 		}
 	}
 
 	// выводим построенное MST
 	printMST(predecessors);
+	std::cout << "\nIterations num: " << count_iter;
 }
 
-int UnorientedGraph::findMinKey(std::vector<int>& distances, std::vector<bool>& mstSet) {
+int UnorientedGraph::findMinDist(std::vector<int>& distances, std::vector<bool>& mstSet) {
 	int min = INT_MAX;
 	int min_index = -1;
 
@@ -149,11 +152,89 @@ int UnorientedGraph::findMinKey(std::vector<int>& distances, std::vector<bool>& 
 }
 
 void UnorientedGraph::printMST(std::vector<int>& predecessors) {
+	int total_weight = 0;
 	std::cout << "Minimum spanning tree:\n" << "Edge \tWeight\n";
-	for (int i = 1; i < vertices_num; i++)
+	for (int i = 1; i < vertices_num; i++) {
 		std::cout << predecessors[i] << " - " << i << " \t" << weight_m[i][predecessors[i]] << " \n";
+		total_weight += weight_m[i][predecessors[i]];
+	}
+		
+	std::cout << "Total weight of Minimum Spanning Tree is " << total_weight << std::endl;
 }
 
+
+void UnorientedGraph::Boruvka() {
+	// алгоритм Борувки для поиска минимального остовного дерева
+	int count_iter = 0;
+	std::vector<int> parent(vertices_num), rank(vertices_num, 0), cheapest(vertices_num, -1);
+	std::iota(parent.begin(), parent.end(), 0); // Инициализируем parent[i] = i
+
+	int numTrees = vertices_num; // изначально каждая вершина - это отдельное дерево
+	int MSTweight = 0; // Вес остова
+
+	// Продолжаем объединять компоненты, пока не останется только одна компонента
+	while (numTrees > 1) {
+		// Инициализация cheapest каждый раз новым поиском
+		std::fill(cheapest.begin(), cheapest.end(), -1);
+
+		// Ищем наименьшее ребро для каждой компоненты
+		for (int u = 0; u < vertices_num; u++) {
+			for (int v = 0; v < vertices_num; v++) {
+				if (find(u, parent) != find(v, parent) && adjacency_m[u][v]) { // выбираем только те рёбра, которые соединяют разные компоненты
+					count_iter++;
+					if (cheapest[find(u, parent)] == -1 or 
+						weight_m[u][v] < weight_m[cheapest[find(u, parent)] / vertices_num][cheapest[find(u, parent)] % vertices_num]) 
+					{
+						cheapest[find(u, parent)] = u * vertices_num + v;
+					}
+				}
+			}
+		}
+
+		// Для каждой компоненты добавляем найденное ребро в MST
+		for (int i = 0; i < vertices_num; i++) {
+			if (cheapest[i] != -1) {
+				int u = cheapest[i] / vertices_num;
+				int v = cheapest[i] % vertices_num;
+				int set_u = find(u, parent);
+				int set_v = find(v, parent);
+
+				if (set_u != set_v) {
+					MSTweight += weight_m[u][v];
+					std::cout << u << " - " << v << " \t" << weight_m[u][v] << " \n";
+					union_sets(set_u, set_v, parent, rank);
+					numTrees--;
+				}
+			}
+		}
+	}
+
+	std::cout << "Total weight of Minimum Spanning Tree is " << MSTweight << std::endl;
+	std::cout << "\nIterations num: " << count_iter;
+}
+
+
+int UnorientedGraph::find(int u, std::vector<int>& parent) {
+	if (parent[u] != u)
+		parent[u] = find(parent[u], parent); // Путь сжатия
+	return parent[u];
+}
+
+void UnorientedGraph::union_sets(int u, int v, std::vector<int>& parent, std::vector<int>& rank) {
+	u = find(u, parent);
+	v = find(v, parent);
+
+	if (u != v) {
+		if (rank[u] < rank[v])
+			parent[u] = v;
+		else if (rank[u] > rank[v])
+			parent[v] = u;
+		else {
+			parent[v] = u;
+			rank[u]++;
+		}
+	}
+}
 
 
 void UnorientedGraph::printAdjacencyMatrix() {

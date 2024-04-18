@@ -3,6 +3,7 @@
 #include <iostream> 
 #include <iomanip>
 #include "OrientedGraph.h"
+#include <numeric>
 
 class UnorientedGraph {
 public:
@@ -18,6 +19,7 @@ public:
 
 	int spanningTreesNum(); // количество минимальных остовных деревьев
 	void Prim();
+	void Boruvka();
 
 
 private:
@@ -30,8 +32,11 @@ private:
 	std::vector<std::vector<int>> kirchhoff_m; // матрица Кирхгофа
 
 	void generateAdjacencyMatrix(const std::vector<int>& distribution);
-	int findMinKey(std::vector<int>& distances, std::vector<bool>& mstSet);
+	int findMinDist(std::vector<int>& distances, std::vector<bool>& mstSet);
 	void printMST(std::vector<int>& predecessors);
+
+	int find(int u, std::vector<int>& parent);
+	void union_sets(int u, int v, std::vector<int>& parent, std::vector<int>& rank);
 };
 
 int determinant(const std::vector<std::vector<int>>& matrix);
