@@ -171,11 +171,15 @@ int main() {
             myUnorientedGraph.generatePruferCode(myUnorientedGraph.getPredecessorsPrim());
             break;
 
+        case 23:
+            myUnorientedGraph.decodePruferCode();
+            break;
+
         default:
             break;
         }
 
-        if (flag) i = intInput("\nEnter a number\n", 22);
+        if (flag) i = intInput("\nEnter a number\n", 23);
     }
 
     return 0;
@@ -207,4 +211,5 @@ void help() {
     std::cout << "[20] - Prim's algorithm" << '\n';
     std::cout << "[21] - Boruvka's algorithm" << '\n';
     std::cout << "[22] - generate Prufer code" << '\n';
+    std::cout << "[23] - decode Prufer code" << '\n';
 }

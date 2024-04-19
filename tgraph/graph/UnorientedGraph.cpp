@@ -133,9 +133,9 @@ void UnorientedGraph::Prim() {
 		}
 	}
 
-	for (int v : predecessors) {
-		if (v == 0) {
-			predecessors[0] = v;
+	for (int i = 0; i < predecessors.size(); i++) {
+		if (predecessors[i] == 0) {
+			//predecessors[0] = i;
 			break;
 		}
 	}
@@ -252,11 +252,14 @@ void UnorientedGraph::generatePruferCode(const std::vector<int>& predecessors) {
 	std::vector<int> vertex_degree(n, 0);  // вектор для хранения степеней вершин
 
 	// Вычисляем степени всех вершин
-	for (int i = 0; i < n; i++) {
-		if (predecessors[i] != -1) {
+	for (int i = 1; i < n; i++) {
 			vertex_degree[i]++;  // Увеличиваем степень текущей вершины
 			vertex_degree[predecessors[i]]++;  // Увеличиваем степень родителя текущей вершины
-		}
+	}
+
+	std::vector<std::pair<int, int>> edges;
+	for (int i = 1; i < vertices_num; i++) {
+		edges.push_back(std::pair<int, int>(std::min(predecessors[i], i), std::max(predecessors[i], i)));
 	}
 
 	int ptr = 0; // Указатель на вершину с минимальным номером и степенью 1
@@ -270,7 +273,20 @@ void UnorientedGraph::generatePruferCode(const std::vector<int>& predecessors) {
 
 	// Генерируем код 
 	for (int i = 0; i < n - 2; i++) {
-		int next = predecessors[leaf]; // next — родитель текущего листа
+		int next = -1; // next — родитель текущего листа
+		for (int j = 0; j < edges.size(); j++) {
+			if (edges[j].first == leaf) {
+				next = edges[j].second;
+				edges.erase(edges.begin() + j);
+				break;
+			}
+			if (edges[j].second == leaf) {
+				next = edges[j].first;
+				edges.erase(edges.begin() + j);
+				break;
+			}
+		}
+
 		prufer_code.push_back(next); // Добавляем родителя текущего листа в код Прюфера
 		prufer_code_weights.push_back(weight_m[next][leaf]); // добавляем вес 
 		vertex_degree[leaf]--;  // Уменьшаем степень листа
@@ -286,18 +302,71 @@ void UnorientedGraph::generatePruferCode(const std::vector<int>& predecessors) {
 	}
 
 	// сохраняем код
+	int next = -1;
+	for (int j = 0; j < edges.size(); j++) {
+		if (edges[j].first == leaf) {
+			next = edges[j].second;
+			break;
+		}
+		if (edges[j].second == leaf) {
+			next = edges[j].first;
+			break;
+		}
+	}
+	prufer_code_weights.push_back(weight_m[next][leaf]); // добавляем вес 
+
 	this->prufer_code = prufer_code;
 	this->prufer_code_weights = prufer_code_weights;
 
 	// Выводим код Прюфера
 	std::cout << "Prufer Code:\n";
 	for (int i = 0; i < prufer_code.size(); i++) {
-		std::cout << '(' << this->prufer_code[i] << "; " << this->prufer_code_weights[i] << ")\n"; // Вывод каждого элемента кода Прюфера
 		std::cout << '(' << prufer_code[i] << "; " << prufer_code_weights[i] << ")\n"; // Вывод каждого элемента кода Прюфера
 	}
 	std::cout << "\n";
+}
 
 
+void UnorientedGraph::decodePruferCode() {
+	std::vector<std::vector<int>> matrix = {};
+	matrix.resize(weight_m.size(), std::vector<int>(weight_m.size(), 0));
+
+	std::vector<bool> vertices(vertices_num, 0);
+	int size = prufer_code.size();
+
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+
+			if (vertices[j] or isInVec(prufer_code, j)) continue;
+			matrix[j][prufer_code[0]] = prufer_code_weights[i];
+			matrix[prufer_code[0]][j] = matrix[j][prufer_code[0]];
+
+			vertices[j] = 1;
+			prufer_code.erase(prufer_code.begin());
+			break;
+		}
+	}
+
+	// добавление последнего ребра
+	std::pair<int, int> last_edge(-1, -1);
+	for (int i = 0; i < vertices_num; i++) {
+		if (vertices[i] == 0) {
+			if (last_edge.first == -1)
+				last_edge.first = i;
+			else
+				last_edge.second = i;
+		}
+	}
+
+	matrix[last_edge.first][last_edge.second] = prufer_code_weights[prufer_code_weights.size() - 1];
+	matrix[last_edge.first][last_edge.second] = matrix[last_edge.second][last_edge.first];
+
+	for (int i = 0; i < matrix.size(); i++) {
+		for (int j = 0; j < matrix.size(); j++) {
+			std::cout << std::right << std::setw(width) << matrix[i][j] << ' ';
+		}
+		std::cout << '\n';
+	}
 }
 
 
@@ -358,4 +427,8 @@ int determinant(const std::vector<std::vector<int>>& matrix) {
 	}
 
 	return det;
+}
+
+bool isInVec(const std::vector<int>& vec, int item) {
+	return std::find(vec.begin(), vec.end(), item) != vec.end();
 }

@@ -4,6 +4,7 @@
 #include <iomanip>
 #include "OrientedGraph.h"
 #include <numeric>
+#include <algorithm>
 
 class UnorientedGraph {
 public:
@@ -21,6 +22,7 @@ public:
 	void Prim();
 	void Boruvka();
 	void generatePruferCode(const std::vector<int>& predecessors);
+	void decodePruferCode();
 
 	const std::vector<int>& getPredecessorsPrim() { return predecessors_Prim; };
 
@@ -48,3 +50,4 @@ private:
 };
 
 int determinant(const std::vector<std::vector<int>>& matrix);
+bool isInVec(const std::vector<int>& vec, int item);
