@@ -128,12 +128,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="distribution\distribution.cpp" />
-    <ClCompile Include="graph\graph.cpp" />
+    <ClCompile Include="graph\OrientedGraph.cpp" />
+    <ClCompile Include="graph\UnorientedGraph.cpp" />
     <ClCompile Include="tgraph.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="distribution\distribution.h" />
-    <ClInclude Include="graph\graph.h" />
+    <ClInclude Include="graph\OrientedGraph.h" />
+    <ClInclude Include="graph\UnorientedGraph.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
