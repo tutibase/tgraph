@@ -247,6 +247,11 @@ void UnorientedGraph::union_sets(int u, int v, std::vector<int>& parent, std::ve
 
 void UnorientedGraph::generatePruferCode(const std::vector<int>& predecessors) {
 	// Генерация кода Прюфера для хранения остова
+	if (predecessors.empty()) {
+		std::cout << "First, create MST using the Prim algorithm\n";
+		return;
+	}
+
 	int n = predecessors.size();  // Получаем количество вершин в остове
 
 	std::vector<int> vertex_degree(n, 0);  // вектор для хранения степеней вершин
@@ -328,6 +333,10 @@ void UnorientedGraph::generatePruferCode(const std::vector<int>& predecessors) {
 
 
 void UnorientedGraph::decodePruferCode() {
+	if (prufer_code.empty()) {
+		std::cout << "First, create Prufer code\n";
+		return;
+	}
 	std::vector<std::vector<int>> matrix = {};
 	matrix.resize(weight_m.size(), std::vector<int>(weight_m.size(), 0));
 
